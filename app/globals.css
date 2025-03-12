@@ -1,0 +1,50 @@
+@import "tailwindcss";
+
+:root {
+  --background: #F5F5F5;
+  --foreground: #171717;
+  
+  /* Earth and Sand color palette */
+  --earth-dark: #421B1C;
+  --earth-red: #88383B;
+  --earth-brown: #A89072;
+  --earth-gold: #E5AC65;
+  --earth-sand: #DBCAB3;
+  
+  /* New theme colors - more vibrant */
+  --theme-beige: #E8D5C4;
+  --theme-lightBeige: #F3E9E0;
+  --theme-darkGrey: #3A3845;
+  --theme-mediumGrey: #5A5766;
+  --theme-lightText: #F5F5F5;
+  --theme-darkText: #1A1A1A;
+  --theme-accent: #C58940;
+  --theme-lightAccent: #E5BA73;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    /* Don't override light mode colors in dark mode */
+    /* --background: #0a0a0a;
+    --foreground: #ededed; */
+  }
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans, Arial, Helvetica, sans-serif);
+}
+
+@layer base {
+  h1, h2, h3, h4, h5, h6 {
+    font-weight: 700;
+  }
+}
