@@ -16,12 +16,12 @@ export default function Hero() {
               <Button 
                 variant="secondary" 
                 size="lg" 
-                href="/register"
+                href="/dashboard"
                 secondaryTextColor="text-[#8B5A2B]"
                 secondaryHoverBgColor="hover:bg-[#F1DCA7]"
                 className="font-bold bg-[#F1DCA7]"
               >
-                Get Started
+                Dashboard
               </Button>
               <Button 
                 variant="outline" 

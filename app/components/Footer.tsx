@@ -36,6 +36,11 @@ export default function Footer() {
                   Contact
                 </Link>
               </li>
+              <li>
+                <Link href="/profile" className="text-sm text-white opacity-80 hover:text-[#F1DCA7] hover:opacity-100 transition-colors">
+                  Profile
+                </Link>
+              </li>
             </ul>
           </div>
           

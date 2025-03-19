@@ -31,6 +31,9 @@ export default function Header() {
             <Link href="/contact" className="text-white hover:text-[#F1DCA7] font-medium transition-colors">
               Contact
             </Link>
+            <Link href="/profile" className="text-white hover:text-[#F1DCA7] font-medium transition-colors">
+              Profile
+            </Link>
           </nav>
 
           {/* Auth Buttons - Right aligned with margin */}
@@ -112,6 +115,13 @@ export default function Header() {
               onClick={() => setIsMenuOpen(false)}
             >
               Contact
+            </Link>
+            <Link
+              href="/profile"
+              className="block text-white hover:text-[#F1DCA7] font-medium transition-colors"
+              onClick={() => setIsMenuOpen(false)}
+            >
+              Profile
             </Link>
             
             {/* Auth Links - Mobile */}

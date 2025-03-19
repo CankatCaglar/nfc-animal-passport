@@ -14,12 +14,12 @@ const steps = [
   {
     number: '03',
     title: 'Receive Your NFC Tag',
-    description: 'We&apos;ll send you a durable, waterproof NFC tag that can be attached to your pet&apos;s collar.'
+    description: 'We\'ll send you a durable, waterproof NFC tag that can be attached to your pet\'s collar.'
   },
   {
     number: '04',
     title: 'Scan & Access Information',
-    description: 'Anyone with a smartphone can scan the NFC tag to access your pet&apos;s information in emergency situations.'
+    description: 'Anyone with a smartphone can scan the NFC tag to access your pet\'s information in emergency situations.'
   }
 ];
 
@@ -60,19 +60,6 @@ export default function HowItWorks() {
               )}
             </div>
           ))}
-        </div>
-        
-        <div className="mt-16 text-center">
-          <Button 
-            variant="primary" 
-            size="lg" 
-            href="/register"
-            primaryBgColor="bg-[#D08C60]"
-            primaryHoverBgColor="hover:bg-[#C17A50]"
-            className="font-bold"
-          >
-            Get Started Now
-          </Button>
         </div>
       </div>
     </section>
