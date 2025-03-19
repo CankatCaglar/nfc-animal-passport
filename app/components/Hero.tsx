@@ -7,7 +7,7 @@ export default function Hero() {
         <div className="flex flex-col md:flex-row items-center">
           <div className="md:w-1/2 mb-10 md:mb-0">
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-4 leading-tight">
-              Digital Passports for Your Pets
+              Digital Passports for <br />Your Pets
             </h1>
             <p className="text-lg md:text-xl text-white opacity-90 mb-8 max-w-lg">
               Secure, accessible, and convenient NFC-powered digital passports for your beloved animals. Keep all their important information in one place.

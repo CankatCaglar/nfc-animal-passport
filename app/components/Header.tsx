@@ -8,17 +8,17 @@ export default function Header() {
 
   return (
     <header className="bg-[#797D62] shadow-md">
-      <div className="container mx-auto px-4 py-4">
-        <div className="flex justify-between items-center">
-          {/* Logo */}
-          <div className="flex items-center">
+      <div className="container mx-auto px-0 py-4">
+        <div className="flex justify-between items-center px-1">
+          {/* Logo - Left aligned with margin */}
+          <div className="flex items-center w-1/4 justify-start pl-1">
             <Link href="/" className="flex items-center">
               <h1 className="text-white text-xl font-bold">NFC Animal Passport</h1>
             </Link>
           </div>
 
           {/* Desktop Navigation - Centered */}
-          <nav className="hidden md:flex space-x-8 flex-1 justify-center ml-8">
+          <nav className="hidden md:flex space-x-8 w-2/4 justify-center">
             <Link href="/" className="text-white hover:text-[#F1DCA7] font-medium transition-colors">
               Home
             </Link>
@@ -33,8 +33,8 @@ export default function Header() {
             </Link>
           </nav>
 
-          {/* Auth Buttons - Desktop */}
-          <div className="hidden md:flex items-center space-x-4">
+          {/* Auth Buttons - Right aligned with margin */}
+          <div className="hidden md:flex items-center space-x-4 w-1/4 justify-end pr-1">
             <Link 
               href="/login" 
               className="text-white hover:text-[#F1DCA7] font-medium transition-colors"
@@ -84,7 +84,7 @@ export default function Header() {
 
         {/* Mobile Navigation */}
         {isMenuOpen && (
-          <nav className="md:hidden mt-4 space-y-3 pb-3">
+          <nav className="md:hidden mt-4 space-y-3 pb-3 px-4">
             <Link
               href="/"
               className="block text-white hover:text-[#F1DCA7] font-medium transition-colors"
