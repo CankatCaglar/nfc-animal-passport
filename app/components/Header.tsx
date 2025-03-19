@@ -10,14 +10,15 @@ export default function Header() {
     <header className="bg-[#797D62] shadow-md">
       <div className="container mx-auto px-4 py-4">
         <div className="flex justify-between items-center">
+          {/* Logo */}
           <div className="flex items-center">
             <Link href="/" className="flex items-center">
               <h1 className="text-white text-xl font-bold">NFC Animal Passport</h1>
             </Link>
           </div>
 
-          {/* Desktop Navigation */}
-          <nav className="hidden md:flex space-x-8">
+          {/* Desktop Navigation - Centered */}
+          <nav className="hidden md:flex space-x-8 flex-1 justify-center ml-8">
             <Link href="/" className="text-white hover:text-[#F1DCA7] font-medium transition-colors">
               Home
             </Link>
@@ -31,6 +32,22 @@ export default function Header() {
               Contact
             </Link>
           </nav>
+
+          {/* Auth Buttons - Desktop */}
+          <div className="hidden md:flex items-center space-x-4">
+            <Link 
+              href="/login" 
+              className="text-white hover:text-[#F1DCA7] font-medium transition-colors"
+            >
+              Login
+            </Link>
+            <Link 
+              href="/signup" 
+              className="bg-[#D08C60] hover:bg-[#C17A50] text-white px-4 py-2 rounded-lg font-medium transition-colors"
+            >
+              Sign Up
+            </Link>
+          </div>
 
           {/* Mobile Menu Button */}
           <div className="md:hidden">
@@ -96,6 +113,24 @@ export default function Header() {
             >
               Contact
             </Link>
+            
+            {/* Auth Links - Mobile */}
+            <div className="pt-2 border-t border-white/20">
+              <Link
+                href="/login"
+                className="block text-white hover:text-[#F1DCA7] font-medium transition-colors"
+                onClick={() => setIsMenuOpen(false)}
+              >
+                Login
+              </Link>
+              <Link
+                href="/signup"
+                className="block mt-3 bg-[#D08C60] hover:bg-[#C17A50] text-white px-4 py-2 rounded-lg font-medium transition-colors text-center"
+                onClick={() => setIsMenuOpen(false)}
+              >
+                Sign Up
+              </Link>
+            </div>
           </nav>
         )}
       </div>
