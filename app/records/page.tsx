@@ -1,72 +1,183 @@
 "use client";
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
-import { FiSearch, FiFileText, FiPlus } from 'react-icons/fi';
+import { FiSearch, FiFileText, FiPlus, FiX } from 'react-icons/fi';
 import Link from 'next/link';
+import { getFirestore, collection, query, where, getDocs, doc, getDoc } from 'firebase/firestore';
+import { useAuth } from '../context/AuthContext';
 
-// Mock data for pets
-const petRecords = [
-  {
-    id: 1,
-    name: 'Max',
-    type: 'Dog',
-    breed: 'Golden Retriever',
-    age: '3 years',
-    owner: 'John Smith',
-    lastVisit: '2023-12-15',
-    animalType: 'Dog'
-  },
-  {
-    id: 2,
-    name: 'Bella',
-    type: 'Cat',
-    breed: 'Siamese',
-    age: '2 years',
-    owner: 'Sarah Johnson',
-    lastVisit: '2023-12-10',
-    animalType: 'Cat'
-  },
-  {
-    id: 3,
-    name: 'Charlie',
-    type: 'Dog',
-    breed: 'German Shepherd',
-    age: '5 years',
-    owner: 'Michael Brown',
-    lastVisit: '2023-12-05',
-    animalType: 'Dog'
-  },
-  {
-    id: 4,
-    name: 'Luna',
-    type: 'Cat',
-    breed: 'Maine Coon',
-    age: '1 year',
-    owner: 'Emily Davis',
-    lastVisit: '2023-11-30',
-    animalType: 'Cat'
-  }
-];
+interface Animal {
+  id: string;
+  name: string;
+  type: string;
+  breed: string;
+  gender: string;
+  color: string;
+  birthDate: string;
+  owner: {
+    name: string;
+    id: string;
+  };
+  lastVisit?: string;
+  birthFarmId?: string;
+  currentFarmId?: string;
+  deathDate?: string;
+  deathLocation?: string;
+  exportCountry?: string;
+  exportDate?: string;
+  weight?: string;
+  height?: string;
+  healthStatus?: string;
+  microchipNumber?: string;
+  passportNumber?: string;
+  registrationDate?: string;
+  farmInformation?: {
+    address?: string;
+    coordinates?: string;
+    countryCode?: string;
+    email?: string;
+    farmId?: string;
+    name?: string;
+    ownerName?: string;
+    phone?: string;
+    registrationDate?: string;
+    registrationNumber?: string;
+    type?: string;
+  };
+  vaccinations?: Array<{
+    date: string;
+    type: string;
+    veterinarian: string;
+    nextDueDate?: string;
+    batchNumber?: string;
+  }>;
+  medicalHistory?: Array<{
+    date: string;
+    condition: string;
+    treatment: string;
+    veterinarian: string;
+    notes?: string;
+  }>;
+}
 
 export default function Records() {
   const [activeTab, setActiveTab] = useState('all');
   const [searchQuery, setSearchQuery] = useState('');
+  const [animals, setAnimals] = useState<Animal[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+  const [selectedAnimal, setSelectedAnimal] = useState<Animal | null>(null);
+  const { user } = useAuth();
 
-  // Filter pets based on active tab and search query
-  const filteredPets = petRecords.filter(pet => {
-    const matchesTab = activeTab === 'all' || 
-                      (activeTab === 'vaccinations' && pet.lastVisit > '2023-12-01') ||
-                      (activeTab === 'recent' && pet.lastVisit > '2023-12-01') ||
-                      (activeTab === 'surgery' && pet.lastVisit < '2023-12-07');
-                      
-    const matchesSearch = searchQuery === '' || 
-                        pet.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                        pet.owner.toLowerCase().includes(searchQuery.toLowerCase());
-                        
-    return matchesTab && matchesSearch;
-  });
+  const searchAnimals = async () => {
+    if (!searchQuery.trim() || !user) return;
+
+    try {
+      setLoading(true);
+      setError('');
+      const db = getFirestore();
+
+      // Önce doğrudan ID ile arama yapalım
+      const docRef = doc(db, 'animals', searchQuery.trim());
+      const docSnap = await getDoc(docRef);
+
+      if (docSnap.exists()) {
+        // ID ile eşleşen hayvan bulundu
+        const data = docSnap.data();
+        setAnimals([{
+          id: docSnap.id,
+          name: data.name || '',
+          type: data.type || '',
+          breed: data.breed || '',
+          gender: data.gender || '',
+          color: data.color || '',
+          birthDate: data.birthDate || '',
+          owner: data.owner || { name: '', id: '' },
+          lastVisit: data.lastVisit || '',
+          birthFarmId: data.birthFarmId || '',
+          currentFarmId: data.currentFarmId || '',
+          deathDate: data.deathDate || '',
+          deathLocation: data.deathLocation || '',
+          exportCountry: data.exportCountry || '',
+          exportDate: data.exportDate || '',
+          weight: data.weight || '',
+          height: data.height || '',
+          healthStatus: data.healthStatus || '',
+          microchipNumber: data.microchipNumber || '',
+          passportNumber: data.passportNumber || '',
+          registrationDate: data.registrationDate || '',
+          farmInformation: data.farmInformation || {},
+          vaccinations: data.vaccinations || [],
+          medicalHistory: data.medicalHistory || []
+        }]);
+      } else {
+        // ID ile bulunamadıysa, isim ile arama yapalım
+        const animalsRef = collection(db, 'animals');
+        const q = query(animalsRef, where('name', '>=', searchQuery.toLowerCase()), where('name', '<=', searchQuery.toLowerCase() + '\uf8ff'));
+        const querySnapshot = await getDocs(q);
+        
+        const animalsData: Animal[] = [];
+        querySnapshot.forEach((doc) => {
+          const data = doc.data();
+          animalsData.push({
+            id: doc.id,
+            name: data.name || '',
+            type: data.type || '',
+            breed: data.breed || '',
+            gender: data.gender || '',
+            color: data.color || '',
+            birthDate: data.birthDate || '',
+            owner: data.owner || { name: '', id: '' },
+            lastVisit: data.lastVisit || '',
+            birthFarmId: data.birthFarmId || '',
+            currentFarmId: data.currentFarmId || '',
+            deathDate: data.deathDate || '',
+            deathLocation: data.deathLocation || '',
+            exportCountry: data.exportCountry || '',
+            exportDate: data.exportDate || '',
+            weight: data.weight || '',
+            height: data.height || '',
+            healthStatus: data.healthStatus || '',
+            microchipNumber: data.microchipNumber || '',
+            passportNumber: data.passportNumber || '',
+            registrationDate: data.registrationDate || '',
+            farmInformation: data.farmInformation || {},
+            vaccinations: data.vaccinations || [],
+            medicalHistory: data.medicalHistory || []
+          });
+        });
+        
+        if (animalsData.length === 0) {
+          setError('No animals found with this ID or name');
+        }
+        setAnimals(animalsData);
+      }
+    } catch (err) {
+      console.error('Error searching animals:', err);
+      setError('Failed to search animals');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Calculate age from birthDate
+  const calculateAge = (birthDate: string) => {
+    if (!birthDate) return '0 years';
+    const birth = new Date(birthDate);
+    const now = new Date();
+    const ageInYears = now.getFullYear() - birth.getFullYear();
+    return `${ageInYears} ${ageInYears === 1 ? 'year' : 'years'}`;
+  };
+
+  const handleViewRecords = (animal: Animal) => {
+    setSelectedAnimal(animal);
+  };
+
+  const closeModal = () => {
+    setSelectedAnimal(null);
+  };
 
   return (
     <main className="min-h-screen">
@@ -85,92 +196,74 @@ export default function Records() {
                 <FiSearch className="text-[#D08C60] w-5 h-5 mr-2" />
                 <input
                   type="text"
-                  placeholder="Search by pet or owner name"
+                  placeholder="Search by animal ID or name"
                   className="w-full bg-transparent border-none focus:outline-none text-[#797D62]"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
+                  onKeyPress={(e) => e.key === 'Enter' && searchAnimals()}
                 />
               </div>
             </div>
             
-            {/* Tabs */}
-            <div className="flex overflow-x-auto mb-8 pb-2">
-              <button
-                className={`px-6 py-3 rounded-full font-medium mr-3 whitespace-nowrap transition-colors ${
-                  activeTab === 'all' 
-                    ? 'bg-[#D08C60] text-white' 
-                    : 'bg-white text-[#797D62] hover:bg-[#F3E9E0]'
-                }`}
-                onClick={() => setActiveTab('all')}
-              >
-                All Records
-              </button>
-              <button
-                className={`px-6 py-3 rounded-full font-medium mr-3 whitespace-nowrap transition-colors ${
-                  activeTab === 'recent' 
-                    ? 'bg-[#D08C60] text-white' 
-                    : 'bg-white text-[#797D62] hover:bg-[#F3E9E0]'
-                }`}
-                onClick={() => setActiveTab('recent')}
-              >
-                Recent Visits
-              </button>
-              <button
-                className={`px-6 py-3 rounded-full font-medium mr-3 whitespace-nowrap transition-colors ${
-                  activeTab === 'vaccinations' 
-                    ? 'bg-[#D08C60] text-white' 
-                    : 'bg-white text-[#797D62] hover:bg-[#F3E9E0]'
-                }`}
-                onClick={() => setActiveTab('vaccinations')}
-              >
-                Vaccinations
-              </button>
-              <button
-                className={`px-6 py-3 rounded-full font-medium mr-3 whitespace-nowrap transition-colors ${
-                  activeTab === 'surgery' 
-                    ? 'bg-[#D08C60] text-white' 
-                    : 'bg-white text-[#797D62] hover:bg-[#F3E9E0]'
-                }`}
-                onClick={() => setActiveTab('surgery')}
-              >
-                Surgery
-              </button>
-            </div>
+            {/* Loading State */}
+            {loading && (
+              <div className="text-center py-8">
+                <div className="text-[#797D62] text-lg">Loading...</div>
+              </div>
+            )}
+
+            {/* Error State */}
+            {error && (
+              <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
+                {error}
+              </div>
+            )}
             
-            {/* Pet Records List */}
+            {/* Animals List */}
             <div className="space-y-4">
-              {filteredPets.map(pet => (
-                <div key={pet.id} className="bg-white rounded-lg p-6 shadow-sm hover:shadow-md transition-all">
+              {!loading && animals.map(animal => (
+                <div key={animal.id} className="bg-white rounded-lg p-6 shadow-sm hover:shadow-md transition-all">
                   <div className="flex justify-between items-start mb-2">
-                    <h2 className="text-2xl font-bold text-[#797D62]">{pet.name}</h2>
+                    <h2 className="text-2xl font-bold text-[#797D62]">{animal.name || 'Unnamed'}</h2>
                     <span className="px-4 py-1 bg-[#D08C60] text-white rounded-full text-sm">
-                      {pet.animalType}
+                      {animal.type || 'Unknown'}
                     </span>
                   </div>
                   
-                  <p className="text-[#797D62] mb-4">
-                    {pet.type} • {pet.breed} • {pet.age}
-                  </p>
-                  
-                  <div className="mb-4">
-                    <p className="text-[#797D62]">
-                      Owner: {pet.owner}
-                    </p>
-                    <p className="text-[#797D62]">
-                      Last Visit: {pet.lastVisit}
-                    </p>
+                  <div className="grid grid-cols-2 gap-4 mb-4">
+                    <div>
+                      <p className="text-[#797D62]">
+                        <span className="font-medium">Breed:</span> {animal.breed || 'Not specified'}
+                      </p>
+                      <p className="text-[#797D62]">
+                        <span className="font-medium">Age:</span> {calculateAge(animal.birthDate)}
+                      </p>
+                    </div>
+                    <div>
+                      <p className="text-[#797D62]">
+                        <span className="font-medium">Owner:</span> {animal.owner?.name || 'Not specified'}
+                      </p>
+                      <p className="text-[#797D62]">
+                        <span className="font-medium">Gender:</span> {animal.gender || 'Not specified'}
+                      </p>
+                      {animal.lastVisit && (
+                        <p className="text-[#797D62]">
+                          <span className="font-medium">Last Visit:</span> {new Date(animal.lastVisit).toLocaleDateString()}
+                        </p>
+                      )}
+                    </div>
                   </div>
                   
                   <div className="flex space-x-3">
-                    <Link 
-                      href={`/records/${pet.id}`}
+                    <button
+                      onClick={() => handleViewRecords(animal)}
                       className="flex items-center justify-center px-4 py-2 bg-[#D08C60] text-white rounded-md hover:bg-[#C17A50] transition-colors"
                     >
                       <FiFileText className="mr-2" />
                       View Records
-                    </Link>
+                    </button>
                     <Link
-                      href={`/records/add/${pet.id}`}
+                      href={`/records/add/${animal.id}`}
                       className="flex items-center justify-center px-4 py-2 bg-[#ADBC9F] text-white rounded-md hover:bg-[#9CAD8B] transition-colors"
                     >
                       <FiPlus className="mr-2" />
@@ -179,6 +272,12 @@ export default function Records() {
                   </div>
                 </div>
               ))}
+
+              {!loading && searchQuery && animals.length === 0 && (
+                <div className="text-center py-8">
+                  <p className="text-[#797D62] text-lg">No animals found</p>
+                </div>
+              )}
             </div>
           </div>
         </div>
@@ -225,6 +324,193 @@ export default function Records() {
           </Link>
         </div>
       </div>
+      
+      {/* Detailed Records Modal */}
+      {selectedAnimal && (
+        <div className="fixed inset-0 bg-[#9B9B7A] bg-opacity-95 flex items-center justify-center p-4 z-50">
+          <div className="bg-white rounded-lg max-w-4xl w-full max-h-[80vh] overflow-y-auto">
+            <div className="sticky top-0 bg-white border-b border-gray-200 p-4 flex justify-between items-center">
+              <h2 className="text-2xl font-bold text-[#797D62]">Animal Details</h2>
+              <button
+                onClick={closeModal}
+                className="text-gray-500 hover:text-gray-700"
+              >
+                <FiX size={24} />
+              </button>
+            </div>
+            
+            <div className="p-6">
+              {/* Basic Information */}
+              <div className="mb-8">
+                <h3 className="text-xl font-bold text-[#797D62] mb-4">Basic Information</h3>
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <p className="text-[#797D62] mb-2">
+                      <span className="font-medium">ID:</span> {selectedAnimal.id || 'null'}
+                    </p>
+                    <p className="text-[#797D62] mb-2">
+                      <span className="font-medium">Name:</span> {selectedAnimal.name || 'null'}
+                    </p>
+                    <p className="text-[#797D62] mb-2">
+                      <span className="font-medium">Type:</span> {selectedAnimal.type || 'null'}
+                    </p>
+                    <p className="text-[#797D62] mb-2">
+                      <span className="font-medium">Breed:</span> {selectedAnimal.breed || 'null'}
+                    </p>
+                    <p className="text-[#797D62] mb-2">
+                      <span className="font-medium">Gender:</span> {selectedAnimal.gender || 'null'}
+                    </p>
+                    <p className="text-[#797D62] mb-2">
+                      <span className="font-medium">Color:</span> {selectedAnimal.color || 'null'}
+                    </p>
+                  </div>
+                  <div>
+                    <p className="text-[#797D62] mb-2">
+                      <span className="font-medium">Birth Date:</span> {selectedAnimal.birthDate || 'null'}
+                    </p>
+                    <p className="text-[#797D62] mb-2">
+                      <span className="font-medium">Weight:</span> {selectedAnimal.weight || 'null'}
+                    </p>
+                    <p className="text-[#797D62] mb-2">
+                      <span className="font-medium">Height:</span> {selectedAnimal.height || 'null'}
+                    </p>
+                    <p className="text-[#797D62] mb-2">
+                      <span className="font-medium">Health Status:</span> {selectedAnimal.healthStatus || 'null'}
+                    </p>
+                    <p className="text-[#797D62] mb-2">
+                      <span className="font-medium">Microchip Number:</span> {selectedAnimal.microchipNumber || 'null'}
+                    </p>
+                    <p className="text-[#797D62] mb-2">
+                      <span className="font-medium">Passport Number:</span> {selectedAnimal.passportNumber || 'null'}
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Farm Information */}
+              <div className="mb-8">
+                <h3 className="text-xl font-bold text-[#797D62] mb-4">Farm Information</h3>
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <p className="text-[#797D62] mb-2">
+                      <span className="font-medium">Farm Name:</span> {selectedAnimal.farmInformation?.name || 'null'}
+                    </p>
+                    <p className="text-[#797D62] mb-2">
+                      <span className="font-medium">Owner Name:</span> {selectedAnimal.farmInformation?.ownerName || 'null'}
+                    </p>
+                    <p className="text-[#797D62] mb-2">
+                      <span className="font-medium">Registration Number:</span> {selectedAnimal.farmInformation?.registrationNumber || 'null'}
+                    </p>
+                    <p className="text-[#797D62] mb-2">
+                      <span className="font-medium">Registration Date:</span> {selectedAnimal.farmInformation?.registrationDate || 'null'}
+                    </p>
+                  </div>
+                  <div>
+                    <p className="text-[#797D62] mb-2">
+                      <span className="font-medium">Address:</span> {selectedAnimal.farmInformation?.address || 'null'}
+                    </p>
+                    <p className="text-[#797D62] mb-2">
+                      <span className="font-medium">Country Code:</span> {selectedAnimal.farmInformation?.countryCode || 'null'}
+                    </p>
+                    <p className="text-[#797D62] mb-2">
+                      <span className="font-medium">Phone:</span> {selectedAnimal.farmInformation?.phone || 'null'}
+                    </p>
+                    <p className="text-[#797D62] mb-2">
+                      <span className="font-medium">Email:</span> {selectedAnimal.farmInformation?.email || 'null'}
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Export Information */}
+              <div className="mb-8">
+                <h3 className="text-xl font-bold text-[#797D62] mb-4">Export Information</h3>
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <p className="text-[#797D62] mb-2">
+                      <span className="font-medium">Export Country:</span> {selectedAnimal.exportCountry || 'null'}
+                    </p>
+                    <p className="text-[#797D62] mb-2">
+                      <span className="font-medium">Export Date:</span> {selectedAnimal.exportDate || 'null'}
+                    </p>
+                  </div>
+                  <div>
+                    <p className="text-[#797D62] mb-2">
+                      <span className="font-medium">Death Location:</span> {selectedAnimal.deathLocation || 'null'}
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Medical History */}
+              <div className="mb-8">
+                <h3 className="text-xl font-bold text-[#797D62] mb-4">Medical History</h3>
+                {selectedAnimal.medicalHistory && selectedAnimal.medicalHistory.length > 0 ? (
+                  <div className="grid gap-4">
+                    {selectedAnimal.medicalHistory.map((record, index) => (
+                      <div key={index} className="bg-gray-50 p-4 rounded-lg">
+                        <p className="text-[#797D62] mb-2">
+                          <span className="font-medium">Date:</span> {record.date}
+                        </p>
+                        <p className="text-[#797D62] mb-2">
+                          <span className="font-medium">Condition:</span> {record.condition}
+                        </p>
+                        <p className="text-[#797D62] mb-2">
+                          <span className="font-medium">Treatment:</span> {record.treatment}
+                        </p>
+                        <p className="text-[#797D62] mb-2">
+                          <span className="font-medium">Veterinarian:</span> {record.veterinarian}
+                        </p>
+                        {record.notes && (
+                          <p className="text-[#797D62]">
+                            <span className="font-medium">Notes:</span> {record.notes}
+                          </p>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <p className="text-[#797D62]">No medical history records found</p>
+                )}
+              </div>
+
+              {/* Vaccinations */}
+              <div>
+                <h3 className="text-xl font-bold text-[#797D62] mb-4">Vaccination History</h3>
+                {selectedAnimal.vaccinations && selectedAnimal.vaccinations.length > 0 ? (
+                  <div className="grid gap-4">
+                    {selectedAnimal.vaccinations.map((vaccination, index) => (
+                      <div key={index} className="bg-gray-50 p-4 rounded-lg">
+                        <p className="text-[#797D62] mb-2">
+                          <span className="font-medium">Date:</span> {vaccination.date}
+                        </p>
+                        <p className="text-[#797D62] mb-2">
+                          <span className="font-medium">Type:</span> {vaccination.type}
+                        </p>
+                        <p className="text-[#797D62] mb-2">
+                          <span className="font-medium">Veterinarian:</span> {vaccination.veterinarian}
+                        </p>
+                        {vaccination.nextDueDate && (
+                          <p className="text-[#797D62] mb-2">
+                            <span className="font-medium">Next Due Date:</span> {vaccination.nextDueDate}
+                          </p>
+                        )}
+                        {vaccination.batchNumber && (
+                          <p className="text-[#797D62]">
+                            <span className="font-medium">Batch Number:</span> {vaccination.batchNumber}
+                          </p>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <p className="text-[#797D62]">No vaccination records found</p>
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
       
       <Footer />
     </main>

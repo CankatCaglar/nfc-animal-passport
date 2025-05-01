@@ -14,7 +14,6 @@ type CardProps = {
   textColor?: string;
   borderColor?: string;
 };
-
 export default function Card({
   title,
   description,

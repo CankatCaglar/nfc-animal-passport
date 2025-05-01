@@ -50,11 +50,11 @@ A modern web application for managing pet information using NFC technology. This
 
 4. Start the development server:
    ```
-   npm run dev
+npm run dev
    ```
    or
    ```
-   yarn dev
+yarn dev
    ```
 
 5. Open your browser and visit `http://localhost:3000`

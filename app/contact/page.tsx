@@ -73,7 +73,7 @@ export default function ContactPage() {
                       <option value="billing">Billing Question</option>
                       <option value="partnership">Partnership Opportunity</option>
                     </select>
-                  </div>
+        </div>
                   
                   <div className="mb-6">
                     <label htmlFor="message" className="block text-sm font-medium text-[#797D62] mb-1">
@@ -102,32 +102,32 @@ export default function ContactPage() {
                 <h2 className="text-2xl font-bold text-[#8B5A2B] mb-4">Visit Our Office</h2>
                 <p className="text-[#997B66] mb-6">
                   We&apos;re located in Bostanli, Izmir. Feel free to stop by during business hours!
-                </p>
-                
-                <div className="w-full h-64 bg-gray-200 rounded-lg mb-6">
-                  {/* Map would go here */}
-                  <div className="w-full h-full flex items-center justify-center">
-                    <p className="text-gray-500">Map Placeholder</p>
-                  </div>
+              </p>
+              
+              <div className="w-full h-64 bg-gray-200 rounded-lg mb-6">
+                {/* Map would go here */}
+                <div className="w-full h-full flex items-center justify-center">
+                  <p className="text-gray-500">Map Placeholder</p>
                 </div>
-                
-                <div className="flex flex-col md:flex-row justify-center gap-8">
-                  <div>
+              </div>
+              
+              <div className="flex flex-col md:flex-row justify-center gap-8">
+                <div>
                     <h3 className="text-lg font-semibold text-[#8B5A2B] mb-2">Address</h3>
                     <p className="text-[#997B66]">
                       Bostanli<br />
                       Izmir<br />
                       Turkey
-                    </p>
-                  </div>
-                  
-                  <div>
+                  </p>
+                </div>
+                
+                <div>
                     <h3 className="text-lg font-semibold text-[#8B5A2B] mb-2">Business Hours</h3>
                     <p className="text-[#997B66]">
-                      Monday - Friday: 9am - 5pm<br />
-                      Saturday: 10am - 2pm<br />
-                      Sunday: Closed
-                    </p>
+                    Monday - Friday: 9am - 5pm<br />
+                    Saturday: 10am - 2pm<br />
+                    Sunday: Closed
+                  </p>
                   </div>
                 </div>
                 

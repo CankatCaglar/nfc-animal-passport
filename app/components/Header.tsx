@@ -2,9 +2,22 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
+import { useAuth } from '../context/AuthContext';
+import { useRouter } from 'next/navigation';
 
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const { user, logout } = useAuth();
+  const router = useRouter();
+
+  const handleLogout = async () => {
+    try {
+      await logout();
+      router.push('/');
+    } catch (error) {
+      console.error('Error logging out:', error);
+    }
+  };
 
   return (
     <header className="bg-[#797D62] shadow-md">
@@ -31,54 +44,59 @@ export default function Header() {
             <Link href="/contact" className="text-white hover:text-[#F1DCA7] font-medium transition-colors">
               Contact
             </Link>
-            <Link href="/profile" className="text-white hover:text-[#F1DCA7] font-medium transition-colors">
-              Profile
-            </Link>
+            {user && (
+              <Link href="/profile" className="text-white hover:text-[#F1DCA7] font-medium transition-colors">
+                Profile
+              </Link>
+            )}
           </nav>
 
           {/* Auth Buttons - Right aligned with margin */}
           <div className="hidden md:flex items-center space-x-4 w-1/4 justify-end pr-1">
-            <Link 
-              href="/login" 
-              className="text-white hover:text-[#F1DCA7] font-medium transition-colors"
-            >
-              Login
-            </Link>
-            <Link 
-              href="/signup" 
-              className="bg-[#D08C60] hover:bg-[#C17A50] text-white px-4 py-2 rounded-lg font-medium transition-colors"
-            >
-              Sign Up
-            </Link>
+            {!user ? (
+              <>
+                <Link 
+                  href="/login" 
+                  className="text-white hover:text-[#F1DCA7] font-medium transition-colors"
+                >
+                  Login
+                </Link>
+                <Link 
+                  href="/signup" 
+                  className="bg-[#F1DCA7] text-[#797D62] px-4 py-2 rounded-md hover:bg-[#D9AE94] transition-colors"
+                >
+                  Sign Up
+                </Link>
+              </>
+            ) : (
+              <button
+                onClick={handleLogout}
+                className="text-white hover:text-[#F1DCA7] font-medium transition-colors"
+              >
+                Logout
+              </button>
+            )}
           </div>
 
           {/* Mobile Menu Button */}
           <div className="md:hidden">
             <button
               onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className="text-white focus:outline-none"
+              className="text-white p-2"
             >
               <svg
-                className="w-6 h-6"
+                className="h-6 w-6"
                 fill="none"
-                stroke="currentColor"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
                 viewBox="0 0 24 24"
-                xmlns="http://www.w3.org/2000/svg"
+                stroke="currentColor"
               >
                 {isMenuOpen ? (
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M6 18L18 6M6 6l12 12"
-                  />
+                  <path d="M6 18L18 6M6 6l12 12" />
                 ) : (
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M4 6h16M4 12h16M4 18h16"
-                  />
+                  <path d="M4 6h16M4 12h16M4 18h16" />
                 )}
               </svg>
             </button>
@@ -116,31 +134,43 @@ export default function Header() {
             >
               Contact
             </Link>
-            <Link
-              href="/profile"
-              className="block text-white hover:text-[#F1DCA7] font-medium transition-colors"
-              onClick={() => setIsMenuOpen(false)}
-            >
-              Profile
-            </Link>
-            
-            {/* Auth Links - Mobile */}
-            <div className="pt-2 border-t border-white/20">
+            {user && (
               <Link
-                href="/login"
+                href="/profile"
                 className="block text-white hover:text-[#F1DCA7] font-medium transition-colors"
                 onClick={() => setIsMenuOpen(false)}
               >
-                Login
+                Profile
               </Link>
-              <Link
-                href="/signup"
-                className="block mt-3 bg-[#D08C60] hover:bg-[#C17A50] text-white px-4 py-2 rounded-lg font-medium transition-colors text-center"
-                onClick={() => setIsMenuOpen(false)}
+            )}
+            {!user ? (
+              <>
+                <Link
+                  href="/login"
+                  className="block text-white hover:text-[#F1DCA7] font-medium transition-colors"
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  Login
+                </Link>
+                <Link
+                  href="/signup"
+                  className="block text-white hover:text-[#F1DCA7] font-medium transition-colors"
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  Sign Up
+                </Link>
+              </>
+            ) : (
+              <button
+                onClick={() => {
+                  handleLogout();
+                  setIsMenuOpen(false);
+                }}
+                className="block text-white hover:text-[#F1DCA7] font-medium transition-colors w-full text-left"
               >
-                Sign Up
-              </Link>
-            </div>
+                Logout
+              </button>
+            )}
           </nav>
         )}
       </div>

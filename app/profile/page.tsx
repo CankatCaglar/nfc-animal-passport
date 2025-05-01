@@ -2,42 +2,118 @@
 
 import Header from '../components/Header';
 import Footer from '../components/Footer';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useAuth } from '../context/AuthContext';
+import { getFirestore, doc, getDoc, updateDoc } from 'firebase/firestore';
 
 export default function ProfilePage() {
   const [showEditForm, setShowEditForm] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
+  const { user } = useAuth();
   const [userData, setUserData] = useState({
-    firstName: "John",
-    lastName: "Doe",
-    licenseNumber: "PO-12345-CA",
-    specialties: ["Surgery", "Dermatology", "Internal Medicine"],
-    email: "john.doe@example.com",
-    phone: "(555) 123-4567",
-    address: "123 Main Street, Anytown, CA 12345"
+    firstName: "",
+    lastName: "",
+    userType: "",
+    licenseNumber: "",
+    specialties: [],
+    email: "",
+    phone: "",
+    address: ""
   });
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      if (!user) {
+        setLoading(false);
+        return;
+      }
+
+      try {
+        const db = getFirestore();
+        const userDoc = await getDoc(doc(db, 'users', user.uid));
+        
+        if (userDoc.exists()) {
+          setUserData({
+            firstName: userDoc.data().firstName || "",
+            lastName: userDoc.data().lastName || "",
+            userType: userDoc.data().userType || "",
+            licenseNumber: userDoc.data().licenseNumber || "",
+            specialties: userDoc.data().specialties || [],
+            email: userDoc.data().email || "",
+            phone: userDoc.data().phoneNumber || "",
+            address: userDoc.data().address || ""
+          });
+        }
+      } catch (err) {
+        console.error('Error fetching user data:', err);
+        setError('Failed to load profile data');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchUserData();
+  }, [user]);
 
   const toggleEditForm = () => {
     setShowEditForm(!showEditForm);
   };
 
-  const handleFormSubmit = (e) => {
+  const handleFormSubmit = async (e) => {
     e.preventDefault();
+    if (!user) return;
+
     const formData = new FormData(e.target);
-    
-    // Update user data with form values
-    setUserData({
-      ...userData,
+    const updatedData = {
       firstName: formData.get('firstName'),
       lastName: formData.get('lastName'),
-      licenseNumber: formData.get('license'),
       email: formData.get('email'),
-      phone: formData.get('phone'),
-      address: formData.get('address')
-    });
+      ...(userData.userType === 'vet' ? {
+        licenseNumber: formData.get('license'),
+      } : {
+        phoneNumber: formData.get('phone'),
+        address: formData.get('address'),
+      })
+    };
 
-    // Hide the form after submission
-    setShowEditForm(false);
+    try {
+      const db = getFirestore();
+      await updateDoc(doc(db, 'users', user.uid), updatedData);
+      
+      setUserData(prev => ({
+        ...prev,
+        ...updatedData
+      }));
+      
+      setShowEditForm(false);
+    } catch (err) {
+      console.error('Error updating profile:', err);
+      setError('Failed to update profile');
+    }
   };
+
+  if (loading) {
+    return (
+      <main className="min-h-screen bg-[#9B9B7A]">
+        <Header />
+        <div className="flex items-center justify-center pt-20">
+          <div className="text-white text-xl">Loading...</div>
+        </div>
+      </main>
+    );
+  }
+
+  if (!user) {
+    return (
+      <main className="min-h-screen bg-[#9B9B7A]">
+        <Header />
+        <div className="flex items-center justify-center pt-20">
+          <div className="text-white text-xl">Please log in to view your profile</div>
+        </div>
+      </main>
+    );
+  }
 
   return (
     <main className="min-h-screen">
@@ -59,35 +135,49 @@ export default function ProfilePage() {
       <section className="pt-4 pb-16 bg-[#9B9B7A]">
         <div className="container mx-auto px-4">
           <div className="max-w-6xl mx-auto">
+            {error && (
+              <div className="mb-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded">
+                {error}
+              </div>
+            )}
+            
             <div className="flex flex-col md:flex-row gap-8 md:align-start">
-              {/* Sidebar - Sabit kart */}
+              {/* Sidebar */}
               <div className="w-full md:w-1/3 self-start" style={{ position: 'sticky', top: '20px' }}>
                 <div className="bg-[#F5F5F5] p-6 rounded-lg shadow-md">
                   <div className="text-center mb-6">
                     <div className="w-32 h-32 bg-[#F2D399] rounded-full mx-auto mb-4 flex items-center justify-center overflow-hidden">
-                      <span className="text-white text-5xl">👨‍⚕️</span>
+                      <span className="text-white text-5xl">{userData.userType === 'vet' ? '👨‍⚕️' : '👤'}</span>
                     </div>
                     <h3 className="text-xl font-bold text-[#797D62]">{userData.firstName} {userData.lastName}</h3>
-                    <p className="text-[#997B66]">DVM, Veterinary Surgeon</p>
-                    <p className="text-[#997B66] text-sm mb-2">Member since 2023</p>
+                    {userData.userType === 'vet' && (
+                      <p className="text-[#997B66]">DVM, Veterinary Surgeon</p>
+                    )}
+                    <p className="text-[#997B66] text-sm mb-2">Member since {new Date().getFullYear()}</p>
                   </div>
                   
                   <nav className="space-y-2">
                     <a href="#" className="block py-2 px-4 bg-[#D08C60] text-white rounded-md font-medium">Profile Information</a>
                     <a href="#" className="block py-2 px-4 text-[#797D62] hover:bg-[#D08C60] hover:text-white rounded-md transition-colors">Password & Security</a>
-                    <a href="#" className="block py-2 px-4 text-[#797D62] hover:bg-[#D08C60] hover:text-white rounded-md transition-colors">Appointments</a>
-                    <a href="#" className="block py-2 px-4 text-[#797D62] hover:bg-[#D08C60] hover:text-white rounded-md transition-colors">Working Hours</a>
-                    <a href="#" className="block py-2 px-4 text-[#797D62] hover:bg-[#D08C60] hover:text-white rounded-md transition-colors">Vacation Schedule</a>
+                    {userData.userType === 'vet' && (
+                      <>
+                        <a href="#" className="block py-2 px-4 text-[#797D62] hover:bg-[#D08C60] hover:text-white rounded-md transition-colors">Appointments</a>
+                        <a href="#" className="block py-2 px-4 text-[#797D62] hover:bg-[#D08C60] hover:text-white rounded-md transition-colors">Working Hours</a>
+                        <a href="#" className="block py-2 px-4 text-[#797D62] hover:bg-[#D08C60] hover:text-white rounded-md transition-colors">Vacation Schedule</a>
+                      </>
+                    )}
                   </nav>
                 </div>
               </div>
               
-              {/* Main Content - Dinamik kart */}
+              {/* Main Content */}
               <div className="w-full md:w-2/3">
                 <div className="bg-[#F5F5F5] p-6 rounded-lg shadow-md">
                   <div>
                     <div className="flex justify-between items-center mb-8">
-                      <h2 className="text-3xl font-bold text-[#797D62]">Professional Information</h2>
+                      <h2 className="text-3xl font-bold text-[#797D62]">
+                        {userData.userType === 'vet' ? 'Professional Information' : 'Personal Information'}
+                      </h2>
                       <button
                         onClick={toggleEditForm}
                         className="bg-[#D08C60] hover:bg-[#C17A50] text-white py-2 px-6 rounded-md font-medium transition-colors"
@@ -97,19 +187,23 @@ export default function ProfilePage() {
                     </div>
                     
                     <div className="space-y-8 pb-8">
-                      <div>
-                        <h3 className="text-xl font-medium text-[#797D62] mb-3">License Number:</h3>
-                        <p className="text-lg text-[#997B66] font-medium">{userData.licenseNumber}</p>
-                      </div>
-                      
-                      <div>
-                        <h3 className="text-xl font-medium text-[#797D62] mb-3">Specialties:</h3>
-                        <div className="flex flex-wrap gap-3">
-                          {userData.specialties.map((specialty, index) => (
-                            <span key={index} className="bg-[#F2D399] text-[#797D62] px-5 py-2 rounded-full text-base font-medium">{specialty}</span>
-                          ))}
-                        </div>
-                      </div>
+                      {userData.userType === 'vet' && (
+                        <>
+                          <div>
+                            <h3 className="text-xl font-medium text-[#797D62] mb-3">License Number:</h3>
+                            <p className="text-lg text-[#997B66] font-medium">{userData.licenseNumber}</p>
+                          </div>
+                          
+                          <div>
+                            <h3 className="text-xl font-medium text-[#797D62] mb-3">Specialties:</h3>
+                            <div className="flex flex-wrap gap-3">
+                              {userData.specialties.map((specialty, index) => (
+                                <span key={index} className="bg-[#F2D399] text-[#797D62] px-5 py-2 rounded-full text-base font-medium">{specialty}</span>
+                              ))}
+                            </div>
+                          </div>
+                        </>
+                      )}
                       
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                         <div>
@@ -163,18 +257,20 @@ export default function ProfilePage() {
                           </div>
                         </div>
                         
-                        <div className="mb-4">
-                          <label htmlFor="license" className="block text-sm font-medium text-[#797D62] mb-1">
-                            License Number
-                          </label>
-                          <input
-                            type="text"
-                            id="license"
-                            name="license"
-                            defaultValue={userData.licenseNumber}
-                            className="w-full px-4 py-2 border-2 border-[#D08C60] rounded-md focus:ring-[#D08C60] focus:border-[#D08C60] transition-all"
-                          />
-                        </div>
+                        {userData.userType === 'vet' && (
+                          <div className="mb-4">
+                            <label htmlFor="license" className="block text-sm font-medium text-[#797D62] mb-1">
+                              License Number
+                            </label>
+                            <input
+                              type="text"
+                              id="license"
+                              name="license"
+                              defaultValue={userData.licenseNumber}
+                              className="w-full px-4 py-2 border-2 border-[#D08C60] rounded-md focus:ring-[#D08C60] focus:border-[#D08C60] transition-all"
+                            />
+                          </div>
+                        )}
                         
                         <div className="mb-4">
                           <label htmlFor="email" className="block text-sm font-medium text-[#797D62] mb-1">
@@ -206,10 +302,10 @@ export default function ProfilePage() {
                           <label htmlFor="address" className="block text-sm font-medium text-[#797D62] mb-1">
                             Address
                           </label>
-                          <textarea
+                          <input
+                            type="text"
                             id="address"
                             name="address"
-                            rows={3}
                             defaultValue={userData.address}
                             className="w-full px-4 py-2 border-2 border-[#D08C60] rounded-md focus:ring-[#D08C60] focus:border-[#D08C60] transition-all"
                           />
@@ -236,4 +332,4 @@ export default function ProfilePage() {
       <Footer />
     </main>
   );
-} 
+}
