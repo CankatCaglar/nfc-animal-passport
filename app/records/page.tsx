@@ -183,7 +183,7 @@ export default function Records() {
     <main className="min-h-screen">
       <Header />
       
-      <section className="py-16 md:py-24 bg-[#F1DCA7]">
+      <section className="py-8 md:py-12 bg-[#F1DCA7] min-h-[calc(100vh-64px)]">
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto">
             <h1 className="text-4xl md:text-5xl font-bold text-[#797D62] mb-10">
