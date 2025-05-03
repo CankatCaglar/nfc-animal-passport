@@ -78,19 +78,6 @@ export default function Features() {
               />
             ))}
           </div>
-          
-          <div className="mt-16 text-center">
-            <Button 
-              variant="primary" 
-              size="lg" 
-              href="/register"
-              primaryBgColor="bg-[#D08C60]"
-              primaryHoverBgColor="hover:bg-[#C17A50]"
-              className="font-bold"
-            >
-              Get Started Now
-            </Button>
-          </div>
         </div>
       </section>
       

@@ -3,12 +3,13 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { useAuth } from '../context/AuthContext';
-import { useRouter } from 'next/navigation';
+import { useRouter, usePathname } from 'next/navigation';
 
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { user, logout } = useAuth();
   const router = useRouter();
+  const pathname = usePathname();
 
   const handleLogout = async () => {
     try {
@@ -32,22 +33,12 @@ export default function Header() {
 
           {/* Desktop Navigation - Centered */}
           <nav className="hidden md:flex space-x-8 w-2/4 justify-center">
-            <Link href="/" className="text-white hover:text-[#F1DCA7] font-medium transition-colors">
-              Home
-            </Link>
-            <Link href="/about" className="text-white hover:text-[#F1DCA7] font-medium transition-colors">
-              About
-            </Link>
-            <Link href="/features" className="text-white hover:text-[#F1DCA7] font-medium transition-colors">
-              Features
-            </Link>
-            <Link href="/contact" className="text-white hover:text-[#F1DCA7] font-medium transition-colors">
-              Contact
-            </Link>
+            <Link href="/" className={`font-medium transition-colors px-3 py-1 rounded ${pathname === '/' ? 'bg-[#D08C60] text-white' : 'text-white hover:text-[#F1DCA7]'}`}>Home</Link>
+            <Link href="/about" className={`font-medium transition-colors px-3 py-1 rounded ${pathname === '/about' ? 'bg-[#D08C60] text-white' : 'text-white hover:text-[#F1DCA7]'}`}>About</Link>
+            <Link href="/features" className={`font-medium transition-colors px-3 py-1 rounded ${pathname === '/features' ? 'bg-[#D08C60] text-white' : 'text-white hover:text-[#F1DCA7]'}`}>Features</Link>
+            <Link href="/contact" className={`font-medium transition-colors px-3 py-1 rounded ${pathname === '/contact' ? 'bg-[#D08C60] text-white' : 'text-white hover:text-[#F1DCA7]'}`}>Contact</Link>
             {user && (
-              <Link href="/profile" className="text-white hover:text-[#F1DCA7] font-medium transition-colors">
-                Profile
-              </Link>
+              <Link href="/profile" className={`font-medium transition-colors px-3 py-1 rounded ${pathname === '/profile' ? 'bg-[#D08C60] text-white' : 'text-white hover:text-[#F1DCA7]'}`}>Profile</Link>
             )}
           </nav>
 
@@ -106,42 +97,12 @@ export default function Header() {
         {/* Mobile Navigation */}
         {isMenuOpen && (
           <nav className="md:hidden mt-4 space-y-3 pb-3 px-4">
-            <Link
-              href="/"
-              className="block text-white hover:text-[#F1DCA7] font-medium transition-colors"
-              onClick={() => setIsMenuOpen(false)}
-            >
-              Home
-            </Link>
-            <Link
-              href="/about"
-              className="block text-white hover:text-[#F1DCA7] font-medium transition-colors"
-              onClick={() => setIsMenuOpen(false)}
-            >
-              About
-            </Link>
-            <Link
-              href="/features"
-              className="block text-white hover:text-[#F1DCA7] font-medium transition-colors"
-              onClick={() => setIsMenuOpen(false)}
-            >
-              Features
-            </Link>
-            <Link
-              href="/contact"
-              className="block text-white hover:text-[#F1DCA7] font-medium transition-colors"
-              onClick={() => setIsMenuOpen(false)}
-            >
-              Contact
-            </Link>
+            <Link href="/" className={`block font-medium transition-colors px-3 py-2 rounded ${pathname === '/' ? 'bg-[#D08C60] text-white' : 'text-white hover:text-[#F1DCA7]'}`} onClick={() => setIsMenuOpen(false)}>Home</Link>
+            <Link href="/about" className={`block font-medium transition-colors px-3 py-2 rounded ${pathname === '/about' ? 'bg-[#D08C60] text-white' : 'text-white hover:text-[#F1DCA7]'}`} onClick={() => setIsMenuOpen(false)}>About</Link>
+            <Link href="/features" className={`block font-medium transition-colors px-3 py-2 rounded ${pathname === '/features' ? 'bg-[#D08C60] text-white' : 'text-white hover:text-[#F1DCA7]'}`} onClick={() => setIsMenuOpen(false)}>Features</Link>
+            <Link href="/contact" className={`block font-medium transition-colors px-3 py-2 rounded ${pathname === '/contact' ? 'bg-[#D08C60] text-white' : 'text-white hover:text-[#F1DCA7]'}`} onClick={() => setIsMenuOpen(false)}>Contact</Link>
             {user && (
-              <Link
-                href="/profile"
-                className="block text-white hover:text-[#F1DCA7] font-medium transition-colors"
-                onClick={() => setIsMenuOpen(false)}
-              >
-                Profile
-              </Link>
+              <Link href="/profile" className={`block font-medium transition-colors px-3 py-2 rounded ${pathname === '/profile' ? 'bg-[#D08C60] text-white' : 'text-white hover:text-[#F1DCA7]'}`} onClick={() => setIsMenuOpen(false)}>Profile</Link>
             )}
             {!user ? (
               <>

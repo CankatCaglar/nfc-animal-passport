@@ -64,18 +64,18 @@ export default function Features() {
           ))}
         </div>
         
-        <div className="mt-16 text-center">
+        {/* <div className="mt-16 text-center">
           <Button 
-            variant="secondary" 
+            variant="primary" 
             size="lg" 
-            href="/features"
-            secondaryTextColor="text-[#8B5A2B]"
-            secondaryHoverBgColor="hover:bg-[#F1DCA7]"
+            href="/register"
+            primaryBgColor="bg-[#D08C60]"
+            primaryHoverBgColor="hover:bg-[#C17A50]"
             className="font-bold"
           >
-            Explore All Features
+            Get Started Now
           </Button>
-        </div>
+        </div> */}
       </div>
     </section>
   );
