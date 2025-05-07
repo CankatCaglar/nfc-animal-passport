@@ -54,15 +54,16 @@ const moreAppointments = [
 
 interface Animal {
   id: string;
-  name: string;
-  type: string;
-  breed: string;
-  gender: string;
-  color: string;
-  birthDate: string;
-  owner: {
-    name: string;
-    id: string;
+  name?: string;
+  animalName?: string;
+  type?: string;
+  breed?: string;
+  gender?: string;
+  color?: string;
+  birthDate?: string;
+  owner?: {
+    name?: string;
+    id?: string;
   };
   lastVisit?: string;
   birthFarmId?: string;
@@ -89,14 +90,10 @@ interface Animal {
     registrationDate?: string;
     registrationNumber?: string;
     type?: string;
+    provinceCode?: string;
+    fax?: string;
   };
-  vaccinations?: Array<{
-    date: string;
-    type: string;
-    veterinarian: string;
-    nextDueDate?: string;
-    batchNumber?: string;
-  }>;
+  vaccinations?: any;
   medicalHistory?: Array<{
     date: string;
     condition: string;
@@ -104,6 +101,19 @@ interface Animal {
     veterinarian: string;
     notes?: string;
   }>;
+  slaughterhouse?: {
+    name?: string;
+    address?: string;
+    licenseNumber?: string;
+    slaughterDate?: string;
+  };
+  ownerInformation?: {
+    firstName?: string;
+    lastName?: string;
+    idNumber?: string;
+    address?: string;
+  };
+  parentId?: string;
 }
 
 export default function Dashboard() {
@@ -149,6 +159,7 @@ export default function Dashboard() {
         animalsData.push({
           id: doc.id,
           name: data.name || '',
+          animalName: data.animalName || '',
           type: data.type || '',
           breed: data.breed || '',
           gender: data.gender || '',
@@ -170,7 +181,10 @@ export default function Dashboard() {
           registrationDate: data.registrationDate || '',
           farmInformation: data.farmInformation || {},
           vaccinations: data.vaccinations || [],
-          medicalHistory: data.medicalHistory || []
+          medicalHistory: data.medicalHistory || [],
+          slaughterhouse: data.slaughterhouse || {},
+          ownerInformation: data.ownerInformation || {},
+          parentId: data.parentId || '',
         });
       });
       setAllAnimals(animalsData);
@@ -370,13 +384,13 @@ export default function Dashboard() {
                     )}
                     {/* Animals List */}
                     <div className="space-y-4">
-                      {!recordsLoading && animals.map(animal => (
+                      {!recordsLoading && (recordsSearch.trim() === ''
+                        ? animals.slice(0, 10)
+                        : animals
+                      ).map(animal => (
                         <div key={animal.id} className="bg-white rounded-lg p-6 shadow-sm hover:shadow-md transition-all">
                           <div className="flex justify-between items-start mb-2">
-                            <h2 className="text-2xl font-bold text-[#797D62]">{animal.name || 'Unnamed'}</h2>
-                            <span className="px-4 py-1 bg-[#D08C60] text-white rounded-full text-sm">
-                              {animal.type || 'Unknown'}
-                            </span>
+                            <h2 className="text-2xl font-bold text-[#797D62]">{animal.animalName || animal.name || 'Unnamed'}</h2>
                           </div>
                           <div className="grid grid-cols-2 gap-4 mb-4">
                             <div>
@@ -384,12 +398,23 @@ export default function Dashboard() {
                                 <span className="font-medium">Breed:</span> {animal.breed || 'Not specified'}
                               </p>
                               <p className="text-[#797D62]">
-                                <span className="font-medium">Age:</span> {calculateAge(animal.birthDate)}
+                                <span className="font-medium">Animal ID:</span> {animal.id}
                               </p>
                             </div>
                             <div>
                               <p className="text-[#797D62]">
-                                <span className="font-medium">Owner:</span> {animal.owner?.name || 'Not specified'}
+                                <span className="font-medium">Owner:</span> {(() => {
+                                  if (animal.owner?.name) {
+                                    const parts = animal.owner.name.split(' ');
+                                    if (parts.length > 1) {
+                                      return parts[0] + ' ' + parts.slice(1).join(' ');
+                                    } else {
+                                      return animal.owner.name;
+                                    }
+                                  } else {
+                                    return 'Not specified';
+                                  }
+                                })()}
                               </p>
                               <p className="text-[#797D62]">
                                 <span className="font-medium">Gender:</span> {animal.gender || 'Not specified'}
@@ -414,72 +439,116 @@ export default function Dashboard() {
                             <div className="mt-8 border-t border-[#F1DCA7] pt-8 space-y-8">
                               {/* Animal Information */}
                               <div>
-                                <h3 className="text-xl font-bold text-[#797D62] mb-4">Animal Information</h3>
+                                <h3 className="text-2xl font-bold text-[#797D62] mb-4">Animal Information</h3>
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                   <div>
                                     <p className="text-[#797D62] mb-2"><span className="font-medium">Animal ID:</span> {animal.id || '-'}</p>
-                                    <p className="text-[#797D62] mb-2"><span className="font-medium">Birth Date:</span> {animal.birthDate || '-'}</p>
+                                    <p className="text-[#797D62] mb-2"><span className="font-medium">Animal Name:</span> {animal.animalName || animal.name || '-'}</p>
+                                    <p className="text-[#797D62] mb-2"><span className="font-medium">Birth Date:</span> {animal.birthDate ? new Date(animal.birthDate).toLocaleDateString() : '-'}</p>
                                     <p className="text-[#797D62] mb-2"><span className="font-medium">Gender:</span> {animal.gender || '-'}</p>
                                     <p className="text-[#797D62] mb-2"><span className="font-medium">Breed:</span> {animal.breed || '-'}</p>
+                                    <p className="text-[#797D62] mb-2"><span className="font-medium">Parent ID:</span> {('parentId' in animal && animal.parentId) ? animal.parentId : '-'}</p>
                                     <p className="text-[#797D62] mb-2"><span className="font-medium">Birth Farm ID:</span> {animal.birthFarmId || '-'}</p>
                                     <p className="text-[#797D62] mb-2"><span className="font-medium">Current Farm ID:</span> {animal.currentFarmId || '-'}</p>
                                   </div>
                                 </div>
                               </div>
+                              {/* Additional Information */}
+                              <div>
+                                <h3 className="text-2xl font-bold text-[#797D62] mb-4">Additional Information</h3>
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                  <div>
+                                    <p className="text-[#797D62] mb-2"><span className="font-medium">Death Date:</span> {animal.deathDate ? new Date(animal.deathDate).toLocaleDateString() : '-'}</p>
+                                    <p className="text-[#797D62] mb-2"><span className="font-medium">Death Location:</span> {animal.deathLocation || '-'}</p>
+                                    <p className="text-[#797D62] mb-2"><span className="font-medium">Export Country:</span> {animal.exportCountry || '-'}</p>
+                                  </div>
+                                </div>
+                              </div>
                               {/* Vaccinations */}
                               <div>
-                                <h3 className="text-xl font-bold text-[#797D62] mb-4">Vaccinations</h3>
-                                {(animal.vaccinations && animal.vaccinations.length > 0) ? (
-                                  <div className="space-y-2">
-                                    {animal.vaccinations.map((v, idx) => (
-                                      <div key={idx} className="bg-gray-50 p-4 rounded-lg">
-                                        <p className="text-[#797D62] mb-2"><span className="font-medium">Type:</span> {v.type}</p>
-                                        <p className="text-[#797D62] mb-2"><span className="font-medium">Date:</span> {v.date}</p>
-                                        <p className="text-[#797D62] mb-2"><span className="font-medium">Veterinarian:</span> {v.veterinarian}</p>
-                                        {v.nextDueDate && <p className="text-[#797D62] mb-2"><span className="font-medium">Next Due Date:</span> {v.nextDueDate}</p>}
-                                        {v.batchNumber && <p className="text-[#797D62] mb-2"><span className="font-medium">Batch Number:</span> {v.batchNumber}</p>}
-                                      </div>
-                                    ))}
+                                <h3 className="text-2xl font-bold text-[#797D62] mb-4">Vaccinations</h3>
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                  <div>
+                                    <p className="text-[#797D62] mb-2"><span className="font-medium">SAP Vaccine:</span> {Array.isArray(animal.vaccinations)
+                                      ? (animal.vaccinations.find(v => v.type?.toLowerCase().includes('sap'))?.date
+                                          ? new Date(animal.vaccinations.find(v => v.type?.toLowerCase().includes('sap'))?.date as string).toLocaleDateString()
+                                          : '-')
+                                      : (animal.vaccinations && typeof animal.vaccinations === 'object' && typeof (animal.vaccinations as any).sapVaccine === 'string'
+                                          ? new Date((animal.vaccinations as any).sapVaccine).toLocaleDateString()
+                                          : '-')}
+                                    </p>
+                                    <p className="text-[#797D62] mb-2"><span className="font-medium">Brucella Vaccine:</span> {Array.isArray(animal.vaccinations)
+                                      ? (animal.vaccinations.find(v => v.type?.toLowerCase().includes('brucella'))?.date
+                                          ? new Date(animal.vaccinations.find(v => v.type?.toLowerCase().includes('brucella'))?.date as string).toLocaleDateString()
+                                          : '-')
+                                      : (animal.vaccinations && typeof animal.vaccinations === 'object' && typeof (animal.vaccinations as any).brucellaVaccine === 'string'
+                                          ? new Date((animal.vaccinations as any).brucellaVaccine).toLocaleDateString()
+                                          : '-')}
+                                    </p>
+                                    <p className="text-[#797D62] mb-2"><span className="font-medium">Pasteurella Vaccine:</span> {Array.isArray(animal.vaccinations)
+                                      ? (animal.vaccinations.find(v => v.type?.toLowerCase().includes('pasteurella'))?.date
+                                          ? new Date(animal.vaccinations.find(v => v.type?.toLowerCase().includes('pasteurella'))?.date as string).toLocaleDateString()
+                                          : '-')
+                                      : (animal.vaccinations && typeof animal.vaccinations === 'object' && typeof (animal.vaccinations as any).pasteurellaVaccine === 'string'
+                                          ? new Date((animal.vaccinations as any).pasteurellaVaccine).toLocaleDateString()
+                                          : '-')}
+                                    </p>
+                                    <p className="text-[#797D62] mb-2"><span className="font-medium">Other Vaccine:</span> {Array.isArray(animal.vaccinations)
+                                      ? (animal.vaccinations.find(v => v.type?.toLowerCase().includes('other'))?.date
+                                          ? new Date(animal.vaccinations.find(v => v.type?.toLowerCase().includes('other'))?.date as string).toLocaleDateString()
+                                          : '-')
+                                      : (animal.vaccinations && typeof animal.vaccinations === 'object' && typeof (animal.vaccinations as any).otherVaccine === 'string'
+                                          ? new Date((animal.vaccinations as any).otherVaccine).toLocaleDateString()
+                                          : '-')}
+                                    </p>
                                   </div>
-                                ) : <p className="text-[#797D62]">No vaccination records found</p>}
+                                </div>
                               </div>
                               {/* Slaughterhouse Information */}
                               <div>
-                                <h3 className="text-xl font-bold text-[#797D62] mb-4">Slaughterhouse Information</h3>
+                                <h3 className="text-2xl font-bold text-[#797D62] mb-4">Slaughterhouse Information</h3>
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                   <div>
-                                    <p className="text-[#797D62] mb-2"><span className="font-medium">Name:</span> -</p>
-                                    <p className="text-[#797D62] mb-2"><span className="font-medium">Address:</span> -</p>
-                                    <p className="text-[#797D62] mb-2"><span className="font-medium">License Number:</span> -</p>
-                                    <p className="text-[#797D62] mb-2"><span className="font-medium">Slaughter Date:</span> -</p>
+                                    {('slaughterhouse' in animal && animal.slaughterhouse) && (
+                                      <>
+                                        <p className="text-[#797D62] mb-2"><span className="font-medium">Name:</span> {animal.slaughterhouse?.name || '-'}</p>
+                                        <p className="text-[#797D62] mb-2"><span className="font-medium">Address:</span> {animal.slaughterhouse?.address || '-'}</p>
+                                        <p className="text-[#797D62] mb-2"><span className="font-medium">License Number:</span> {animal.slaughterhouse?.licenseNumber || '-'}</p>
+                                        <p className="text-[#797D62] mb-2"><span className="font-medium">Slaughter Date:</span> {animal.slaughterhouse?.slaughterDate ? new Date(animal.slaughterhouse?.slaughterDate as string).toLocaleDateString() : '-'}</p>
+                                      </>
+                                    )}
                                   </div>
                                 </div>
                               </div>
                               {/* Farm Information */}
                               <div>
-                                <h3 className="text-xl font-bold text-[#797D62] mb-4">Farm Information</h3>
+                                <h3 className="text-2xl font-bold text-[#797D62] mb-4">Farm Information</h3>
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                   <div>
                                     <p className="text-[#797D62] mb-2"><span className="font-medium">Country Code:</span> {animal.farmInformation?.countryCode || '-'}</p>
-                                    <p className="text-[#797D62] mb-2"><span className="font-medium">Province Code:</span> -</p>
+                                    <p className="text-[#797D62] mb-2"><span className="font-medium">Province Code:</span> {animal.farmInformation && 'provinceCode' in animal.farmInformation ? animal.farmInformation.provinceCode : '-'}</p>
                                     <p className="text-[#797D62] mb-2"><span className="font-medium">Farm ID:</span> {animal.farmInformation?.farmId || '-'}</p>
                                     <p className="text-[#797D62] mb-2"><span className="font-medium">Farm Address:</span> {animal.farmInformation?.address || '-'}</p>
                                     <p className="text-[#797D62] mb-2"><span className="font-medium">Coordinates:</span> {animal.farmInformation?.coordinates || '-'}</p>
                                     <p className="text-[#797D62] mb-2"><span className="font-medium">Phone:</span> {animal.farmInformation?.phone || '-'}</p>
-                                    <p className="text-[#797D62] mb-2"><span className="font-medium">Fax:</span> -</p>
+                                    <p className="text-[#797D62] mb-2"><span className="font-medium">Fax:</span> {animal.farmInformation && 'fax' in animal.farmInformation ? animal.farmInformation.fax : '-'}</p>
                                     <p className="text-[#797D62] mb-2"><span className="font-medium">Email:</span> {animal.farmInformation?.email || '-'}</p>
                                   </div>
                                 </div>
                               </div>
                               {/* Owner Information */}
                               <div>
-                                <h3 className="text-xl font-bold text-[#797D62] mb-4">Owner Information</h3>
+                                <h3 className="text-2xl font-bold text-[#797D62] mb-4">Owner Information</h3>
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                   <div>
-                                    <p className="text-[#797D62] mb-2"><span className="font-medium">First Name:</span> -</p>
-                                    <p className="text-[#797D62] mb-2"><span className="font-medium">Last Name:</span> -</p>
-                                    <p className="text-[#797D62] mb-2"><span className="font-medium">ID Number:</span> {animal.owner?.id || '-'}</p>
-                                    <p className="text-[#797D62] mb-2"><span className="font-medium">Address:</span> -</p>
+                                    {('ownerInformation' in animal && animal.ownerInformation) && (
+                                      <>
+                                        <p className="text-[#797D62] mb-2"><span className="font-medium">First Name:</span> {animal.ownerInformation?.firstName || '-'}</p>
+                                        <p className="text-[#797D62] mb-2"><span className="font-medium">Last Name:</span> {animal.ownerInformation?.lastName || '-'}</p>
+                                        <p className="text-[#797D62] mb-2"><span className="font-medium">ID Number:</span> {animal.ownerInformation?.idNumber || '-'}</p>
+                                        <p className="text-[#797D62] mb-2"><span className="font-medium">Address:</span> {animal.ownerInformation?.address || '-'}</p>
+                                      </>
+                                    )}
                                   </div>
                                 </div>
                               </div>

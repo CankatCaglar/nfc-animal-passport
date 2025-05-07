@@ -12,28 +12,22 @@ import { FirebaseError } from 'firebase/app';
 import { auth } from '../firebase/config';
 
 interface FormData {
-  userType: 'pet-owner' | 'vet';
   firstName: string;
   lastName: string;
   email: string;
   password: string;
   confirmPassword: string;
-  licenseNumber: string;
-  specialties: string[];
   phoneNumber: string;
   address: string;
 }
 
 export default function SignupPage() {
   const [formData, setFormData] = useState<FormData>({
-    userType: 'pet-owner',
     firstName: '',
     lastName: '',
     email: '',
     password: '',
     confirmPassword: '',
-    licenseNumber: '',
-    specialties: [],
     phoneNumber: '',
     address: '',
   });
@@ -85,17 +79,12 @@ export default function SignupPage() {
       // Store additional user data in Firestore
       const db = getFirestore();
       const userData = {
-        userType: formData.userType,
+        userType: 'pet-owner',
         firstName: formData.firstName,
         lastName: formData.lastName,
         email: formData.email,
-        ...(formData.userType === 'vet' ? {
-          licenseNumber: formData.licenseNumber,
-          specialties: formData.specialties,
-        } : {
-          phoneNumber: formData.phoneNumber,
-          address: formData.address,
-        }),
+        phoneNumber: formData.phoneNumber,
+        address: formData.address,
         createdAt: new Date().toISOString(),
       };
 
@@ -144,24 +133,6 @@ export default function SignupPage() {
             )}
             
             <form onSubmit={handleSubmit}>
-              {/* User Type Selection */}
-              <div className="mb-4">
-                <label htmlFor="userType" className="block text-sm font-medium text-[#797D62] mb-1">
-                  I am a:
-                </label>
-                <select
-                  id="userType"
-                  name="userType"
-                  value={formData.userType}
-                  onChange={handleChange}
-                  className="w-full px-4 py-2 border-2 border-[#D9AE94] rounded-md focus:ring-[#D9AE94] focus:border-[#D9AE94] transition-all"
-                  required
-                >
-                  <option value="pet-owner">Pet Owner</option>
-                  <option value="vet">Veterinarian</option>
-                </select>
-              </div>
-
               {/* Common Fields */}
               <div className="grid grid-cols-2 gap-4 mb-4">
                 <div>
@@ -195,77 +166,35 @@ export default function SignupPage() {
                 </div>
               </div>
 
-              {/* Conditional Fields Based on User Type */}
-              {formData.userType === 'vet' ? (
-                <>
-                  <div className="mb-4">
-                    <label htmlFor="licenseNumber" className="block text-sm font-medium text-[#797D62] mb-1">
-                      License Number
-                    </label>
-                    <input
-                      type="text"
-                      id="licenseNumber"
-                      name="licenseNumber"
-                      value={formData.licenseNumber}
-                      onChange={handleChange}
-                      className="w-full px-4 py-2 border-2 border-[#D9AE94] rounded-md focus:ring-[#D9AE94] focus:border-[#D9AE94] transition-all"
-                      required
-                    />
-                  </div>
+              <div className="mb-4">
+                <label htmlFor="phoneNumber" className="block text-sm font-medium text-[#797D62] mb-1">
+                  Phone Number
+                </label>
+                <input
+                  type="tel"
+                  id="phoneNumber"
+                  name="phoneNumber"
+                  value={formData.phoneNumber}
+                  onChange={handleChange}
+                  className="w-full px-4 py-2 border-2 border-[#D9AE94] rounded-md focus:ring-[#D9AE94] focus:border-[#D9AE94] transition-all"
+                  required
+                />
+              </div>
 
-                  <div className="mb-4">
-                    <label className="block text-sm font-medium text-[#797D62] mb-1">
-                      Specialties
-                    </label>
-                    <div className="space-y-2">
-                      {['Surgery', 'Dermatology', 'Internal Medicine', 'Cardiology', 'Neurology'].map((specialty) => (
-                        <label key={specialty} className="flex items-center">
-                          <input
-                            type="checkbox"
-                            value={specialty}
-                            checked={formData.specialties.includes(specialty)}
-                            onChange={handleSpecialtiesChange}
-                            className="mr-2"
-                          />
-                          {specialty}
-                        </label>
-                      ))}
-                    </div>
-                  </div>
-                </>
-              ) : (
-                <>
-                  <div className="mb-4">
-                    <label htmlFor="phoneNumber" className="block text-sm font-medium text-[#797D62] mb-1">
-                      Phone Number
-                    </label>
-                    <input
-                      type="tel"
-                      id="phoneNumber"
-                      name="phoneNumber"
-                      value={formData.phoneNumber}
-                      onChange={handleChange}
-                      className="w-full px-4 py-2 border-2 border-[#D9AE94] rounded-md focus:ring-[#D9AE94] focus:border-[#D9AE94] transition-all"
-                      required
-                    />
-                  </div>
-
-                  <div className="mb-4">
-                    <label htmlFor="address" className="block text-sm font-medium text-[#797D62] mb-1">
-                      Address
-                    </label>
-                    <input
-                      type="text"
-                      id="address"
-                      name="address"
-                      value={formData.address}
-                      onChange={handleChange}
-                      className="w-full px-4 py-2 border-2 border-[#D9AE94] rounded-md focus:ring-[#D9AE94] focus:border-[#D9AE94] transition-all"
-                      required
-                    />
-                  </div>
-                </>
-              )}
+              <div className="mb-4">
+                <label htmlFor="address" className="block text-sm font-medium text-[#797D62] mb-1">
+                  Address
+                </label>
+                <input
+                  type="text"
+                  id="address"
+                  name="address"
+                  value={formData.address}
+                  onChange={handleChange}
+                  className="w-full px-4 py-2 border-2 border-[#D9AE94] rounded-md focus:ring-[#D9AE94] focus:border-[#D9AE94] transition-all"
+                  required
+                />
+              </div>
               
               <div className="mb-4">
                 <label htmlFor="email" className="block text-sm font-medium text-[#797D62] mb-1">

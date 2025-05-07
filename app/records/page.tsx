@@ -5,7 +5,7 @@ import Header from '../components/Header';
 import Footer from '../components/Footer';
 import { FiSearch, FiFileText, FiPlus, FiX } from 'react-icons/fi';
 import Link from 'next/link';
-import { getFirestore, collection, query, where, getDocs, doc, getDoc } from 'firebase/firestore';
+import { getFirestore, collection, query, where, getDocs, doc, getDoc, onSnapshot } from 'firebase/firestore';
 import { useAuth } from '../context/AuthContext';
 
 interface Animal {
@@ -71,6 +71,67 @@ export default function Records() {
   const [selectedAnimal, setSelectedAnimal] = useState<Animal | null>(null);
   const { user } = useAuth();
 
+  // Add useEffect for real-time updates
+  useEffect(() => {
+    if (!user) return;
+
+    const db = getFirestore();
+    const animalsRef = collection(db, 'animals');
+    
+    // Set up real-time listener
+    const unsubscribe = onSnapshot(animalsRef, (snapshot) => {
+      const animalsData: Animal[] = [];
+      snapshot.forEach((doc) => {
+        const data = doc.data();
+        animalsData.push({
+          id: doc.id,
+          name: data.name || '',
+          type: data.type || '',
+          breed: data.breed || '',
+          gender: data.gender || '',
+          color: data.color || '',
+          birthDate: data.birthDate || '',
+          owner: data.owner || { name: '', id: '' },
+          lastVisit: data.lastVisit || '',
+          birthFarmId: data.birthFarmId || '',
+          currentFarmId: data.currentFarmId || '',
+          deathDate: data.deathDate || '',
+          deathLocation: data.deathLocation || '',
+          exportCountry: data.exportCountry || '',
+          exportDate: data.exportDate || '',
+          weight: data.weight || '',
+          height: data.height || '',
+          healthStatus: data.healthStatus || '',
+          microchipNumber: data.microchipNumber || '',
+          passportNumber: data.passportNumber || '',
+          registrationDate: data.registrationDate || '',
+          farmInformation: data.farmInformation || {},
+          vaccinations: data.vaccinations || [],
+          medicalHistory: data.medicalHistory || []
+        });
+      });
+      
+      // Eğer arama yapılmışsa, arama sonuçlarını güncelle
+      if (searchQuery.trim()) {
+        const filteredAnimals = animalsData.filter(animal => 
+          animal.id === searchQuery.trim() || 
+          animal.name.toLowerCase().includes(searchQuery.toLowerCase())
+        );
+        setAnimals(filteredAnimals);
+      } else {
+        // Arama yapılmamışsa tüm hayvanları göster
+        setAnimals(animalsData);
+      }
+    }, (error) => {
+      console.error('Error listening to animals collection:', error);
+      setError('Failed to update records in real-time');
+    });
+
+    // Clean up listener on component unmount
+    return () => unsubscribe();
+  }, [user, searchQuery]); // Add searchQuery as dependency
+
+  // Remove the old searchAnimals function since we're using real-time updates
   const searchAnimals = async () => {
     if (!searchQuery.trim() || !user) return;
 
@@ -236,12 +297,23 @@ export default function Records() {
                         <span className="font-medium">Breed:</span> {animal.breed || 'Not specified'}
                       </p>
                       <p className="text-[#797D62]">
-                        <span className="font-medium">Age:</span> {calculateAge(animal.birthDate)}
+                        <span className="font-medium">Animal ID:</span> {animal.id}
                       </p>
                     </div>
                     <div>
                       <p className="text-[#797D62]">
-                        <span className="font-medium">Owner:</span> {animal.owner?.name || 'Not specified'}
+                        <span className="font-medium">Owner:</span> {(() => {
+                          if (animal.owner?.name) {
+                            const parts = animal.owner.name.split(' ');
+                            if (parts.length > 1) {
+                              return parts[0] + ' ' + parts.slice(1).join(' ');
+                            } else {
+                              return animal.owner.name;
+                            }
+                          } else {
+                            return 'Not specified';
+                          }
+                        })()}
                       </p>
                       <p className="text-[#797D62]">
                         <span className="font-medium">Gender:</span> {animal.gender || 'Not specified'}
