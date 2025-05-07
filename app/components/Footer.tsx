@@ -22,11 +22,6 @@ export default function Footer() {
                 </Link>
               </li>
               <li>
-                <Link href="/about" className="text-sm text-white opacity-80 hover:text-[#F1DCA7] hover:opacity-100 transition-colors">
-                  About
-                </Link>
-              </li>
-              <li>
                 <Link href="/features" className="text-sm text-white opacity-80 hover:text-[#F1DCA7] hover:opacity-100 transition-colors">
                   Features
                 </Link>

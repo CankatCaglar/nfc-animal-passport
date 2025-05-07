@@ -20,19 +20,9 @@ const features = [
     icon: '📞'
   },
   {
-    title: 'Dietary Information',
-    description: 'Keep track of your pet&apos;s dietary needs, restrictions, and feeding schedules. Particularly important for pets with special dietary requirements or allergies.',
-    icon: '🍖'
-  },
-  {
     title: 'Travel Documentation',
     description: 'Store travel certificates and documentation required for crossing borders with your pet. Makes international travel with your pet much more convenient.',
     icon: '✈️'
-  },
-  {
-    title: 'Behavior Notes',
-    description: 'Document your pet&apos;s behavior patterns, training progress, and special needs. Helpful for pet sitters, trainers, and anyone caring for your pet.',
-    icon: '📝'
   },
   {
     title: 'Medication Reminders',

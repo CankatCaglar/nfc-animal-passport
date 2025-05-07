@@ -16,21 +16,6 @@ const features = [
     title: 'Emergency Contacts',
     description: 'Store important contact information for veterinarians, pet sitters, and emergency services.',
     icon: '📞'
-  },
-  {
-    title: 'Dietary Information',
-    description: 'Keep track of your pet\'s dietary needs, restrictions, and feeding schedules.',
-    icon: '🍎'
-  },
-  {
-    title: 'Travel Documentation',
-    description: 'Store travel certificates and documentation required for crossing borders with your pet.',
-    icon: '✈️'
-  },
-  {
-    title: 'Behavior Notes',
-    description: 'Document your pet\'s behavior patterns, training progress, and special needs.',
-    icon: '📝'
   }
 ];
 

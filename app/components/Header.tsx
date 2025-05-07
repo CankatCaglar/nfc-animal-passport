@@ -34,7 +34,6 @@ export default function Header() {
           {/* Desktop Navigation - Centered */}
           <nav className="hidden md:flex space-x-8 w-2/4 justify-center">
             <Link href="/" className={`font-medium transition-colors px-3 py-1 rounded ${pathname === '/' ? 'bg-[#D08C60] text-white' : 'text-white hover:text-[#F1DCA7]'}`}>Home</Link>
-            <Link href="/about" className={`font-medium transition-colors px-3 py-1 rounded ${pathname === '/about' ? 'bg-[#D08C60] text-white' : 'text-white hover:text-[#F1DCA7]'}`}>About</Link>
             <Link href="/features" className={`font-medium transition-colors px-3 py-1 rounded ${pathname === '/features' ? 'bg-[#D08C60] text-white' : 'text-white hover:text-[#F1DCA7]'}`}>Features</Link>
             <Link href="/contact" className={`font-medium transition-colors px-3 py-1 rounded ${pathname === '/contact' ? 'bg-[#D08C60] text-white' : 'text-white hover:text-[#F1DCA7]'}`}>Contact</Link>
             {user && (
@@ -98,7 +97,6 @@ export default function Header() {
         {isMenuOpen && (
           <nav className="md:hidden mt-4 space-y-3 pb-3 px-4">
             <Link href="/" className={`block font-medium transition-colors px-3 py-2 rounded ${pathname === '/' ? 'bg-[#D08C60] text-white' : 'text-white hover:text-[#F1DCA7]'}`} onClick={() => setIsMenuOpen(false)}>Home</Link>
-            <Link href="/about" className={`block font-medium transition-colors px-3 py-2 rounded ${pathname === '/about' ? 'bg-[#D08C60] text-white' : 'text-white hover:text-[#F1DCA7]'}`} onClick={() => setIsMenuOpen(false)}>About</Link>
             <Link href="/features" className={`block font-medium transition-colors px-3 py-2 rounded ${pathname === '/features' ? 'bg-[#D08C60] text-white' : 'text-white hover:text-[#F1DCA7]'}`} onClick={() => setIsMenuOpen(false)}>Features</Link>
             <Link href="/contact" className={`block font-medium transition-colors px-3 py-2 rounded ${pathname === '/contact' ? 'bg-[#D08C60] text-white' : 'text-white hover:text-[#F1DCA7]'}`} onClick={() => setIsMenuOpen(false)}>Contact</Link>
             {user && (
