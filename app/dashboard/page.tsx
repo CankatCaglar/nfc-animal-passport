@@ -234,11 +234,11 @@ export default function Dashboard() {
     <main className="min-h-screen">
       <Header />
       <section className="pt-16 pb-8 md:pt-20 md:pb-10 bg-[#F1DCA7] min-h-[calc(100vh-64px)]">
-        <div className="container mx-auto px-4">
-          <div className="max-w-6xl mx-auto flex flex-col md:flex-row gap-8 md:align-start">
+        <div className="container mx-auto px-0">
+          <div className="max-w-6xl mx-auto flex flex-col md:flex-row gap-29 md:align-start">
             {/* Sidebar */}
-            <div className="w-full md:w-1/4 self-start" style={{ position: 'sticky', top: '20px' }}>
-              <div className="p-6">
+            <div className="w-full md:w-1/4 self-start" style={{ position: 'sticky', top: '20px', marginLeft: '-59px', minWidth: '240px' }}>
+              <div className="p-0 md:p-2">
                 <nav className="space-y-2">
                   <button
                     className={`block w-full text-left py-2 px-4 rounded-md font-medium transition-colors ${selectedSection === 'appointments' ? 'bg-[#D08C60] text-white' : 'text-[#797D62] hover:bg-[#D08C60] hover:text-white'}`}
@@ -262,12 +262,12 @@ export default function Dashboard() {
               </div>
             </div>
             {/* Main Content */}
-            <div className="w-full md:w-3/4">
-              <div className="p-6 min-h-[400px]">
+            <div className="w-full md:w-3/4 flex flex-col justify-start">
+              <div className="p-0 md:p-2 min-h-[400px]">
                 {selectedSection === 'appointments' && (
                   <div>
                     <div className="flex items-center mb-8 pr-1.5">
-                      <h2 className="text-2xl font-bold text-[#797D62]">Today's Appointments</h2>
+                      <h2 className="text-2xl font-bold text-[#797D62] ml-0">Today's Appointments</h2>
                     </div>
                     {/* Search Bar */}
                     <div className="mb-4 flex flex-col md:flex-row md:items-center md:space-x-4">

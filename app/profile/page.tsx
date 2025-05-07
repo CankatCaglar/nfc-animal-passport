@@ -192,12 +192,14 @@ export default function ProfilePage() {
                 <div className="p-6">
                   <div className="text-center mb-6">
                     <div className="w-32 h-32 bg-[#F2D399] rounded-full mx-auto mb-4 flex items-center justify-center overflow-hidden">
-                      <span className="text-white text-5xl">{userData.userType === 'vet' ? '👨‍⚕️' : '👤'}</span>
+                      <span className="text-white text-5xl">{userData.userType === 'veterinarian' ? '👨‍⚕️' : '👤'}</span>
                     </div>
                     <h3 className="text-xl font-bold text-white">{`${userData.firstName?.trim() || ''} ${userData.lastName?.trim() || ''}`.trim()}</h3>
-                    {userData.userType === 'vet' && (
-                      <p className="text-white text-sm mb-2">DVM, Veterinary Surgeon</p>
-                    )}
+                    <div className="mt-2 mb-2">
+                      <span className="inline-block px-4 py-1 rounded-full text-base font-semibold" style={{background:'#997B66', color:'white'}}>
+                        {userData.userType === 'veterinarian' ? 'Veterinarian' : 'Pet Owner'}
+                      </span>
+                    </div>
                     <p className="text-white text-sm mb-2">Member since {new Date().getFullYear()}</p>
                   </div>
                   
@@ -219,8 +221,8 @@ export default function ProfilePage() {
                 <div className="p-6">
                   <div>
                     <div className="flex justify-between items-center mb-8">
-                      <h2 className="text-3xl font-bold text-white">
-                        {userData.userType === 'vet' ? 'Professional Information' : 'Personal Information'}
+                      <h2 className="text-3xl font-bold text-white flex items-center gap-4">
+                        {userData.userType === 'veterinarian' ? 'Professional Information' : 'Personal Information'}
                       </h2>
                       <button
                         onClick={toggleEditForm}

@@ -10,6 +10,7 @@ import { getFirestore, doc, setDoc } from 'firebase/firestore';
 import Link from 'next/link';
 import { FirebaseError } from 'firebase/app';
 import { auth } from '../firebase/config';
+import { FiEye, FiEyeOff } from 'react-icons/fi';
 
 interface FormData {
   firstName: string;
@@ -36,6 +37,8 @@ export default function SignupPage() {
   const [loading, setLoading] = useState(false);
   const router = useRouter();
   const { signup } = useAuth();
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
@@ -211,34 +214,51 @@ export default function SignupPage() {
                 />
               </div>
               
-              <div className="mb-4">
+              <div className="mb-4 relative">
                 <label htmlFor="password" className="block text-sm font-medium text-[#797D62] mb-1">
                   Password
                 </label>
                 <input
-                  type="password"
+                  type={showPassword ? "text" : "password"}
                   id="password"
                   name="password"
                   value={formData.password}
                   onChange={handleChange}
-                  className="w-full px-4 py-2 border-2 border-[#D9AE94] rounded-md focus:ring-[#D9AE94] focus:border-[#D9AE94] transition-all"
+                  className="w-full px-4 py-2 border-2 border-[#D9AE94] rounded-md focus:ring-[#D9AE94] focus:border-[#D9AE94] transition-all pr-10"
                   required
                 />
+                <span
+                  onClick={() => setShowPassword((prev) => !prev)}
+                  className="absolute right-3 top-9 cursor-pointer text-[#D08C60]"
+                  tabIndex={0}
+                  role="button"
+                  aria-label={showPassword ? 'Hide password' : 'Show password'}
+                >
+                  {showPassword ? <FiEyeOff size={20} /> : <FiEye size={20} />}
+                </span>
               </div>
-              
-              <div className="mb-6">
+              <div className="mb-6 relative">
                 <label htmlFor="confirmPassword" className="block text-sm font-medium text-[#797D62] mb-1">
                   Confirm Password
                 </label>
                 <input
-                  type="password"
+                  type={showConfirmPassword ? "text" : "password"}
                   id="confirmPassword"
                   name="confirmPassword"
                   value={formData.confirmPassword}
                   onChange={handleChange}
-                  className="w-full px-4 py-2 border-2 border-[#D9AE94] rounded-md focus:ring-[#D9AE94] focus:border-[#D9AE94] transition-all"
+                  className="w-full px-4 py-2 border-2 border-[#D9AE94] rounded-md focus:ring-[#D9AE94] focus:border-[#D9AE94] transition-all pr-10"
                   required
                 />
+                <span
+                  onClick={() => setShowConfirmPassword((prev) => !prev)}
+                  className="absolute right-3 top-9 cursor-pointer text-[#D08C60]"
+                  tabIndex={0}
+                  role="button"
+                  aria-label={showConfirmPassword ? 'Hide password' : 'Show password'}
+                >
+                  {showConfirmPassword ? <FiEyeOff size={20} /> : <FiEye size={20} />}
+                </span>
               </div>
               
               <div className="flex items-center mb-6">

@@ -6,12 +6,14 @@ import Header from '../components/Header';
 import Footer from '../components/Footer';
 import { useAuth } from '../context/AuthContext';
 import Link from 'next/link';
+import { FiEye, FiEyeOff } from 'react-icons/fi';
 
 export default function LoginPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
   const router = useRouter();
   const { login } = useAuth();
 
@@ -60,18 +62,27 @@ export default function LoginPage() {
                 />
               </div>
               
-              <div className="mb-6">
+              <div className="mb-6 relative">
                 <label htmlFor="password" className="block text-sm font-medium text-[#797D62] mb-1">
                   Password
                 </label>
                 <input
-                  type="password"
+                  type={showPassword ? "text" : "password"}
                   id="password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="w-full px-4 py-2 border-2 border-[#D9AE94] rounded-md focus:ring-[#D9AE94] focus:border-[#D9AE94] transition-all"
+                  className="w-full px-4 py-2 border-2 border-[#D9AE94] rounded-md focus:ring-[#D9AE94] focus:border-[#D9AE94] transition-all pr-10"
                   required
                 />
+                <span
+                  onClick={() => setShowPassword((prev) => !prev)}
+                  className="absolute right-3 top-9 cursor-pointer text-[#D08C60]"
+                  tabIndex={0}
+                  role="button"
+                  aria-label={showPassword ? 'Hide password' : 'Show password'}
+                >
+                  {showPassword ? <FiEyeOff size={20} /> : <FiEye size={20} />}
+                </span>
               </div>
               
               <div className="flex items-center justify-between mb-6">
