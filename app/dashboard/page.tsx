@@ -5,52 +5,11 @@ import Header from '../components/Header';
 import Footer from '../components/Footer';
 import { FiCalendar, FiUsers, FiFileText, FiMessageSquare, FiEye, FiSearch, FiPlus, FiX } from 'react-icons/fi';
 import { FaSyringe, FaQrcode, FaFileMedical } from 'react-icons/fa';
-import { getFirestore, collection, query as firestoreQuery, where, getDocs, doc, getDoc } from 'firebase/firestore';
+import { getFirestore, collection, query as firestoreQuery, where, getDocs, doc, getDoc, addDoc, onSnapshot, Timestamp } from 'firebase/firestore';
 import { useAuth } from '../context/AuthContext';
-
-// Mock data for the appointments
-const todaysAppointments = [
-  {
-    time: '10:00 AM',
-    petName: 'Max',
-    ownerName: 'John Smith',
-    appointmentType: 'Vaccination'
-  },
-  {
-    time: '11:30 AM',
-    petName: 'Bella',
-    ownerName: 'Sarah Johnson',
-    appointmentType: 'Check-up'
-  },
-  {
-    time: '2:15 PM',
-    petName: 'Charlie',
-    ownerName: 'Michael Brown',
-    appointmentType: 'Surgery'
-  }
-];
-
-// Additional appointments to show when "See All" is clicked
-const moreAppointments = [
-  {
-    time: '3:45 PM',
-    petName: 'Luna',
-    ownerName: 'Emily Wilson',
-    appointmentType: 'Dental'
-  },
-  {
-    time: '4:30 PM',
-    petName: 'Rocky',
-    ownerName: 'David Thompson',
-    appointmentType: 'Check-up'
-  },
-  {
-    time: '5:15 PM',
-    petName: 'Daisy',
-    ownerName: 'Jessica Roberts',
-    appointmentType: 'Vaccination'
-  }
-];
+import dynamic from 'next/dynamic';
+import 'react-time-picker/dist/TimePicker.css';
+import 'react-clock/dist/Clock.css';
 
 interface Animal {
   id: string;
@@ -116,8 +75,13 @@ interface Animal {
   parentId?: string;
 }
 
+// Dynamically import react-time-picker to avoid SSR issues
+const TimePicker = dynamic(() => import('react-time-picker'), { ssr: false });
+
 export default function Dashboard() {
-  const [selectedSection, setSelectedSection] = useState<'appointments' | 'actions' | 'records'>('appointments');
+  const { user } = useAuth ? useAuth() : { user: null };
+  if (!user) return null;
+  const [selectedSection, setSelectedSection] = useState<'appointments' | 'actions' | 'records' | 'addAppointment'>('appointments');
   const [showAllAppointments, setShowAllAppointments] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [activeType, setActiveType] = useState<'All' | 'Vaccination' | 'Check-up' | 'Surgery'>('All');
@@ -127,22 +91,17 @@ export default function Dashboard() {
   const [recordsLoading, setRecordsLoading] = useState(false);
   const [recordsError, setRecordsError] = useState('');
   const [expandedAnimalId, setExpandedAnimalId] = useState<string | null>(null);
-  const { user } = useAuth ? useAuth() : { user: null };
+  const [appointmentType, setAppointmentType] = useState<'Vaccination' | 'Check-up' | 'Surgery' | null>(null);
+  const [appointmentForm, setAppointmentForm] = useState<{ time: string; petName: string; ownerName: string }>({ time: '', petName: '', ownerName: user?.displayName || '' });
+  const [addAppointmentLoading, setAddAppointmentLoading] = useState(false);
+  const [addAppointmentError, setAddAppointmentError] = useState('');
+  const [appointments, setAppointments] = useState<any[]>([]);
+  const [appointmentsLoading, setAppointmentsLoading] = useState(false);
+  const [appointmentsError, setAppointmentsError] = useState('');
 
   // Button style for filter
   const filterButtonBase =
     'flex items-center justify-center w-24 h-8 md:w-28 md:h-10 text-sm md:text-base font-medium border transition-colors rounded-full focus:outline-none px-4';
-
-  // Filtered appointments logic
-  const allAppointments = [...todaysAppointments, ...moreAppointments];
-  const filteredAppointments = allAppointments.filter(app =>
-    (activeType === 'All' || app.appointmentType === activeType) &&
-    (
-      (app.petName && app.petName.toLowerCase().startsWith(searchQuery.toLowerCase()))
-      // Eğer ownerName ile de başlatmak isterseniz aşağıdaki satırı açabilirsiniz:
-      // || (app.ownerName && app.ownerName.toLowerCase().startsWith(searchQuery.toLowerCase()))
-    )
-  );
 
   // Fetch all animals once when records section is opened
   const fetchAllAnimals = async () => {
@@ -230,12 +189,69 @@ export default function Dashboard() {
     setExpandedAnimalId(expandedAnimalId === animal.id ? null : animal.id);
   };
 
+  // Update appointments fetching to get all appointments, not just today's
+  useEffect(() => {
+    if (!user) return;
+    setAppointmentsLoading(true);
+    setAppointmentsError('');
+    const db = getFirestore();
+    const appointmentsRef = collection(db, 'appointments');
+    const unsubscribe = onSnapshot(appointmentsRef, (snapshot) => {
+      const data: any[] = [];
+      snapshot.forEach(doc => data.push({ id: doc.id, ...doc.data() }));
+      setAppointments(data);
+      setAppointmentsLoading(false);
+    }, err => {
+      setAppointmentsError('Failed to fetch appointments');
+      setAppointmentsLoading(false);
+    });
+    return () => unsubscribe();
+  }, [user]);
+
+  // Helper to get today's date string in YYYY-MM-DD
+  const getTodayString = () => {
+    const now = new Date();
+    return now.toISOString().split('T')[0];
+  };
+
+  // Update handleAddAppointment to store dateOnly
+  const handleAddAppointment = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setAddAppointmentLoading(true);
+    setAddAppointmentError('');
+    try {
+      const db = getFirestore();
+      const todayString = getTodayString();
+      await addDoc(collection(db, 'appointments'), {
+        time: appointmentForm.time,
+        petName: appointmentForm.petName,
+        ownerName: appointmentForm.ownerName,
+        ownerId: user.uid,
+        appointmentType: appointmentType,
+        date: Timestamp.fromDate(new Date(`${todayString}T${appointmentForm.time}`)),
+        dateOnly: todayString,
+        createdAt: Timestamp.now(),
+      });
+      setAppointmentType(null);
+      setAppointmentForm({ time: '', petName: '', ownerName: user.displayName || '' });
+    } catch (err: any) {
+      setAddAppointmentError(err.message || 'Failed to add appointment');
+    } finally {
+      setAddAppointmentLoading(false);
+    }
+  };
+
+  // Update isToday to use dateOnly string
+  const isToday = (appointment: any) => {
+    return appointment.dateOnly === getTodayString();
+  };
+
   return (
     <main className="min-h-screen">
       <Header />
       <section className="pt-16 pb-8 md:pt-20 md:pb-10 bg-[#F1DCA7] min-h-[calc(100vh-64px)]">
         <div className="container mx-auto px-0">
-          <div className="max-w-6xl mx-auto flex flex-col md:flex-row gap-29 md:align-start">
+          <div className="max-w-6xl mx-auto flex flex-col md:flex-row gap-44 md:align-start">
             {/* Sidebar */}
             <div className="w-full md:w-1/4 self-start" style={{ position: 'sticky', top: '20px', marginLeft: '-59px', minWidth: '240px' }}>
               <div className="p-0 md:p-2">
@@ -247,16 +263,16 @@ export default function Dashboard() {
                     Today's Appointments
                   </button>
                   <button
-                    className={`block w-full text-left py-2 px-4 rounded-md font-medium transition-colors ${selectedSection === 'actions' ? 'bg-[#D08C60] text-white' : 'text-[#797D62] hover:bg-[#D08C60] hover:text-white'}`}
-                    onClick={() => setSelectedSection('actions')}
-                  >
-                    Quick Actions
-                  </button>
-                  <button
                     className={`block w-full text-left py-2 px-4 rounded-md font-medium transition-colors ${selectedSection === 'records' ? 'bg-[#D08C60] text-white' : 'text-[#797D62] hover:bg-[#D08C60] hover:text-white'}`}
                     onClick={() => setSelectedSection('records')}
                   >
                     Records
+                  </button>
+                  <button
+                    className={`block w-full text-left py-2 px-4 rounded-md font-medium transition-colors ${selectedSection === 'addAppointment' ? 'bg-[#D08C60] text-white' : 'text-[#797D62] hover:bg-[#D08C60] hover:text-white'}`}
+                    onClick={() => setSelectedSection('addAppointment')}
+                  >
+                    Add Appointment
                   </button>
                 </nav>
               </div>
@@ -300,32 +316,46 @@ export default function Dashboard() {
                         ))}
                       </div>
                     </div>
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                      {filteredAppointments.map((appointment, index) => (
-                        <div key={index} className="bg-white border border-gray-200 rounded-lg p-6 shadow-sm hover:shadow-md transition-shadow hover:-translate-y-1 duration-300">
-                          <div className="flex justify-between items-start mb-4">
-                            <div className="font-bold text-[#797D62] text-lg">{appointment.time}</div>
-                            <div className="px-3 py-1 rounded-full text-white text-sm font-medium bg-[#D08C60]">
-                              {appointment.appointmentType}
+                    {/* Appointments List */}
+                    {appointmentsLoading ? (
+                      <div className="text-center py-8">
+                        <div className="text-[#797D62] text-lg">Loading...</div>
+                      </div>
+                    ) : appointmentsError ? (
+                      <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
+                        {appointmentsError}
+                      </div>
+                    ) : (
+                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        {appointments
+                          .filter(app =>
+                            (activeType === 'All' || app.appointmentType === activeType) &&
+                            (!searchQuery || (app.petName && app.petName.toLowerCase().includes(searchQuery.toLowerCase())))
+                          )
+                          .map((appointment, index) => (
+                            <div key={appointment.id} className="bg-white border border-gray-200 rounded-lg p-6 shadow-sm hover:shadow-md transition-shadow hover:-translate-y-1 duration-300">
+                              <div className="flex justify-between items-start mb-4">
+                                <div className="font-bold text-[#797D62] text-lg">{appointment.time}</div>
+                                <div className="px-3 py-1 rounded-full text-white text-sm font-medium bg-[#D08C60]">
+                                  {appointment.appointmentType}
+                                </div>
+                              </div>
+                              <div className="mb-4">
+                                <h3 className="text-xl font-semibold text-[#797D62]">{appointment.petName}</h3>
+                                <p className="text-[#997B66]">Owner: {appointment.ownerName}</p>
+                              </div>
                             </div>
+                          ))}
+                        {appointments.filter(app =>
+                          (activeType === 'All' || app.appointmentType === activeType) &&
+                          (!searchQuery || (app.petName && app.petName.toLowerCase().includes(searchQuery.toLowerCase())))
+                        ).length === 0 && (
+                          <div className="text-center py-8 col-span-3">
+                            <p className="text-[#797D62] text-lg">No appointments found.</p>
                           </div>
-                          <div className="mb-4">
-                            <h3 className="text-xl font-semibold text-[#797D62]">{appointment.petName}</h3>
-                            <p className="text-[#997B66]">Owner: {appointment.ownerName}</p>
-                          </div>
-                          <div className="flex space-x-4 mt-auto">
-                            <button className="flex items-center text-[#997B66] hover:text-[#D08C60]">
-                              <FiMessageSquare className="mr-1" />
-                              <span>Message</span>
-                            </button>
-                            <button className="flex items-center text-[#997B66] hover:text-[#D08C60]">
-                              <FiEye className="mr-1" />
-                              <span>View</span>
-                            </button>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
+                        )}
+                      </div>
+                    )}
                   </div>
                 )}
                 {selectedSection === 'actions' && (
@@ -564,12 +594,104 @@ export default function Dashboard() {
                     </div>
                   </div>
                 )}
+                {selectedSection === 'addAppointment' && (
+                  <div className="max-w-3xl mx-auto">
+                    <div className="mb-8">
+                      <h2 className="text-2xl font-bold text-[#797D62] mb-6">Add Appointment</h2>
+                      <div className="flex gap-8 mb-8">
+                        {['Vaccination', 'Check-up', 'Surgery'].map(type => (
+                          <button
+                            key={type}
+                            className={`w-40 h-40 rounded-xl flex flex-col items-center justify-center shadow-lg text-xl font-semibold border-2 transition-all duration-200 cursor-pointer ${appointmentType === type ? 'bg-[#D08C60] text-white border-[#D08C60] scale-105' : 'bg-white text-[#797D62] border-[#D08C60] hover:bg-[#D08C60] hover:text-white hover:scale-105'}`}
+                            onClick={() => setAppointmentType(type as typeof appointmentType)}
+                          >
+                            {type}
+                          </button>
+                        ))}
+                      </div>
+                      {appointmentType && (
+                        <form className="w-full max-w-md bg-white rounded-lg shadow-md p-8 flex flex-col gap-4" onSubmit={handleAddAppointment}>
+                          <h3 className="text-xl font-bold text-[#797D62] mb-4">{appointmentType} Appointment</h3>
+                          <label className="text-[#797D62] font-medium">Time
+                            <div className="w-full mt-1">
+                              <TimePicker
+                                onChange={(value: string | null) => setAppointmentForm(f => ({ ...f, time: value || '' }))}
+                                value={appointmentForm.time}
+                                disableClock={true}
+                                clearIcon={null}
+                                className="w-full border-2 border-[#D9AE94] rounded-md focus:ring-[#D9AE94] focus:border-[#D9AE94]"
+                                format="HH:mm"
+                                clockIcon={null}
+                              />
+                            </div>
+                          </label>
+                          <label className="text-[#797D62] font-medium">Animal Name
+                            <input
+                              type="text"
+                              className="w-full px-4 py-2 border-2 border-[#D9AE94] rounded-md focus:ring-[#D9AE94] focus:border-[#D9AE94] mt-1"
+                              value={appointmentForm.petName}
+                              onChange={e => setAppointmentForm(f => ({ ...f, petName: e.target.value }))}
+                              required
+                              placeholder="Enter your animal's name"
+                            />
+                          </label>
+                          <label className="text-[#797D62] font-medium">Owner Name
+                            <input
+                              type="text"
+                              className="w-full px-4 py-2 border-2 border-[#D9AE94] rounded-md focus:ring-[#D9AE94] focus:border-[#D9AE94] mt-1"
+                              value={appointmentForm.ownerName}
+                              onChange={e => setAppointmentForm(f => ({ ...f, ownerName: e.target.value }))}
+                              required
+                              placeholder="Enter your name"
+                            />
+                          </label>
+                          {addAppointmentError && <div className="text-red-600 text-sm">{addAppointmentError}</div>}
+                          <button type="submit" className="w-full px-6 py-3 bg-[#D08C60] hover:bg-[#C17A50] text-white font-bold rounded-md transition-colors" disabled={addAppointmentLoading}>
+                            {addAppointmentLoading ? 'Adding...' : 'Add Appointment'}
+                          </button>
+                        </form>
+                      )}
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
           </div>
         </div>
       </section>
       <Footer />
+      {/* Add custom CSS for react-time-picker highlight color */}
+      <style jsx global>{`
+        .react-time-picker__wrapper {
+          border: 2px solid #D9AE94 !important;
+          border-radius: 0.375rem !important;
+        }
+        .react-time-picker__inputGroup__input:focus {
+          border-color: #D08C60 !important;
+          box-shadow: 0 0 0 2px #D08C6033 !important;
+        }
+        .react-time-picker__inputGroup__input:active {
+          border-color: #D08C60 !important;
+        }
+        .react-time-picker__inputGroup__input:focus-visible {
+          outline: 2px solid #D08C60 !important;
+        }
+        .react-time-picker__inputGroup__input:selection {
+          background: #D08C60 !important;
+          color: #fff !important;
+        }
+        .react-time-picker__inputGroup__input::selection {
+          background: #D08C60 !important;
+          color: #fff !important;
+        }
+        .react-time-picker__button svg {
+          stroke: #D08C60 !important;
+        }
+        .react-time-picker__clock {
+          background: #fff !important;
+          border: 2px solid #D08C60 !important;
+        }
+      `}</style>
     </main>
   );
 } 
