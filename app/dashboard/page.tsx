@@ -98,6 +98,7 @@ export default function Dashboard() {
   const [appointments, setAppointments] = useState<any[]>([]);
   const [appointmentsLoading, setAppointmentsLoading] = useState(false);
   const [appointmentsError, setAppointmentsError] = useState('');
+  const [showAddOptions, setShowAddOptions] = useState(false);
 
   // Button style for filter
   const filterButtonBase =
@@ -234,6 +235,7 @@ export default function Dashboard() {
       });
       setAppointmentType(null);
       setAppointmentForm({ time: '', petName: '', ownerName: user.displayName || '' });
+      setShowAddOptions(false);
     } catch (err: any) {
       setAddAppointmentError(err.message || 'Failed to add appointment');
     } finally {
@@ -268,12 +270,6 @@ export default function Dashboard() {
                   >
                     Records
                   </button>
-                  <button
-                    className={`block w-full text-left py-2 px-4 rounded-md font-medium transition-colors ${selectedSection === 'addAppointment' ? 'bg-[#D08C60] text-white' : 'text-[#797D62] hover:bg-[#D08C60] hover:text-white'}`}
-                    onClick={() => setSelectedSection('addAppointment')}
-                  >
-                    Add Appointment
-                  </button>
                 </nav>
               </div>
             </div>
@@ -282,9 +278,94 @@ export default function Dashboard() {
               <div className="p-0 md:p-2 min-h-[400px]">
                 {selectedSection === 'appointments' && (
                   <div>
-                    <div className="flex items-center mb-8 pr-1.5">
+                    <div className="flex items-center mb-8 pr-1.5 relative">
                       <h2 className="text-2xl font-bold text-[#797D62] ml-0">Today's Appointments</h2>
+                      <button
+                        className="ml-4 flex items-center justify-center w-10 h-10 rounded-full bg-[#D08C60] hover:bg-[#C17A50] text-white text-2xl focus:outline-none transition-colors"
+                        onClick={() => {
+                          setAppointmentType(null);
+                          setShowAllAppointments(false);
+                          setAddAppointmentError('');
+                          setAddAppointmentLoading(false);
+                          setShowAddOptions((prev) => !prev);
+                        }}
+                        aria-label="Add Appointment"
+                        type="button"
+                      >
+                        <FiPlus />
+                      </button>
                     </div>
+                    {/* Add Appointment Options - Modern Popup */}
+                    {showAddOptions && !appointmentType && (
+                      <div className="w-full flex mb-6">
+                        <div className="flex flex-row gap-4 bg-white shadow-lg rounded-xl px-6 py-4 z-30 border border-[#D08C60]">
+                          {['Vaccination', 'Check-up', 'Surgery'].map(type => (
+                            <button
+                              key={type}
+                              className={`px-6 py-3 rounded-lg font-semibold text-lg transition-all duration-200 cursor-pointer border-2 ${appointmentType === type ? 'bg-[#D08C60] text-white border-[#D08C60]' : 'bg-white text-[#797D62] border-[#D08C60] hover:bg-[#D08C60] hover:text-white'}`}
+                              onClick={() => setAppointmentType(type as typeof appointmentType)}
+                              type="button"
+                            >
+                              {type}
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                    {/* Add Appointment Form (inline, only if type selected) */}
+                    {showAddOptions && appointmentType && (
+                      <div className="relative w-full max-w-md mb-8">
+                        {/* X button sağ üst köşe */}
+                        <button
+                          type="button"
+                          className="absolute top-4 right-4 text-[#797D62] hover:text-[#D08C60] text-2xl p-0 m-0 bg-transparent border-none focus:outline-none"
+                          onClick={() => { setAppointmentType(null); setShowAddOptions(false); }}
+                          aria-label="Cancel"
+                        >
+                          <FiX />
+                        </button>
+                        <form className="bg-white rounded-lg shadow-md p-8 flex flex-col gap-4" onSubmit={handleAddAppointment}>
+                          <h3 className="text-xl font-bold text-[#797D62] mb-4">{appointmentType} Appointment</h3>
+                          <label className="text-[#797D62] font-medium">Time
+                            <div className="w-full mt-1">
+                              <TimePicker
+                                onChange={(value: string | null) => setAppointmentForm(f => ({ ...f, time: value || '' }))}
+                                value={appointmentForm.time}
+                                disableClock={true}
+                                clearIcon={null}
+                                className="w-full border-2 border-[#D9AE94] rounded-md focus:ring-[#D9AE94] focus:border-[#D9AE94]"
+                                format="HH:mm"
+                                clockIcon={null}
+                              />
+                            </div>
+                          </label>
+                          <label className="text-[#797D62] font-medium">Animal Name
+                            <input
+                              type="text"
+                              className="w-full px-4 py-2 border-2 border-[#D9AE94] rounded-md focus:ring-[#D9AE94] focus:border-[#D9AE94] mt-1"
+                              value={appointmentForm.petName}
+                              onChange={e => setAppointmentForm(f => ({ ...f, petName: e.target.value }))}
+                              required
+                              placeholder="Enter your animal's name"
+                            />
+                          </label>
+                          <label className="text-[#797D62] font-medium">Owner Name
+                            <input
+                              type="text"
+                              className="w-full px-4 py-2 border-2 border-[#D9AE94] rounded-md focus:ring-[#D9AE94] focus:border-[#D9AE94] mt-1"
+                              value={appointmentForm.ownerName}
+                              onChange={e => setAppointmentForm(f => ({ ...f, ownerName: e.target.value }))}
+                              required
+                              placeholder="Enter your name"
+                            />
+                          </label>
+                          {addAppointmentError && <div className="text-red-600 text-sm">{addAppointmentError}</div>}
+                          <button type="submit" className="w-full px-6 py-3 bg-[#D08C60] hover:bg-[#C17A50] text-white font-bold rounded-md transition-colors" disabled={addAppointmentLoading}>
+                            {addAppointmentLoading ? 'Adding...' : 'Add Appointment'}
+                          </button>
+                        </form>
+                      </div>
+                    )}
                     {/* Search Bar */}
                     <div className="mb-4 flex flex-col md:flex-row md:items-center md:space-x-4">
                       <div className="relative w-full md:w-1/2 mb-2 md:mb-0">
@@ -330,8 +411,10 @@ export default function Dashboard() {
                         {appointments
                           .filter(app =>
                             (activeType === 'All' || app.appointmentType === activeType) &&
-                            (!searchQuery || (app.petName && app.petName.toLowerCase().includes(searchQuery.toLowerCase())))
+                            (!searchQuery || (app.petName && app.petName.toLowerCase().startsWith(searchQuery.toLowerCase())))
                           )
+                          // Sadece son 12 randevu göster (arama yoksa)
+                          .slice(0, searchQuery ? undefined : 12)
                           .map((appointment, index) => (
                             <div key={appointment.id} className="bg-white border border-gray-200 rounded-lg p-6 shadow-sm hover:shadow-md transition-shadow hover:-translate-y-1 duration-300">
                               <div className="flex justify-between items-start mb-4">
@@ -590,66 +673,6 @@ export default function Dashboard() {
                         <div className="text-center py-8">
                           <p className="text-[#797D62] text-lg">No animals found</p>
                         </div>
-                      )}
-                    </div>
-                  </div>
-                )}
-                {selectedSection === 'addAppointment' && (
-                  <div className="max-w-3xl mx-auto">
-                    <div className="mb-8">
-                      <h2 className="text-2xl font-bold text-[#797D62] mb-6">Add Appointment</h2>
-                      <div className="flex gap-8 mb-8">
-                        {['Vaccination', 'Check-up', 'Surgery'].map(type => (
-                          <button
-                            key={type}
-                            className={`w-40 h-40 rounded-xl flex flex-col items-center justify-center shadow-lg text-xl font-semibold border-2 transition-all duration-200 cursor-pointer ${appointmentType === type ? 'bg-[#D08C60] text-white border-[#D08C60] scale-105' : 'bg-white text-[#797D62] border-[#D08C60] hover:bg-[#D08C60] hover:text-white hover:scale-105'}`}
-                            onClick={() => setAppointmentType(type as typeof appointmentType)}
-                          >
-                            {type}
-                          </button>
-                        ))}
-                      </div>
-                      {appointmentType && (
-                        <form className="w-full max-w-md bg-white rounded-lg shadow-md p-8 flex flex-col gap-4" onSubmit={handleAddAppointment}>
-                          <h3 className="text-xl font-bold text-[#797D62] mb-4">{appointmentType} Appointment</h3>
-                          <label className="text-[#797D62] font-medium">Time
-                            <div className="w-full mt-1">
-                              <TimePicker
-                                onChange={(value: string | null) => setAppointmentForm(f => ({ ...f, time: value || '' }))}
-                                value={appointmentForm.time}
-                                disableClock={true}
-                                clearIcon={null}
-                                className="w-full border-2 border-[#D9AE94] rounded-md focus:ring-[#D9AE94] focus:border-[#D9AE94]"
-                                format="HH:mm"
-                                clockIcon={null}
-                              />
-                            </div>
-                          </label>
-                          <label className="text-[#797D62] font-medium">Animal Name
-                            <input
-                              type="text"
-                              className="w-full px-4 py-2 border-2 border-[#D9AE94] rounded-md focus:ring-[#D9AE94] focus:border-[#D9AE94] mt-1"
-                              value={appointmentForm.petName}
-                              onChange={e => setAppointmentForm(f => ({ ...f, petName: e.target.value }))}
-                              required
-                              placeholder="Enter your animal's name"
-                            />
-                          </label>
-                          <label className="text-[#797D62] font-medium">Owner Name
-                            <input
-                              type="text"
-                              className="w-full px-4 py-2 border-2 border-[#D9AE94] rounded-md focus:ring-[#D9AE94] focus:border-[#D9AE94] mt-1"
-                              value={appointmentForm.ownerName}
-                              onChange={e => setAppointmentForm(f => ({ ...f, ownerName: e.target.value }))}
-                              required
-                              placeholder="Enter your name"
-                            />
-                          </label>
-                          {addAppointmentError && <div className="text-red-600 text-sm">{addAppointmentError}</div>}
-                          <button type="submit" className="w-full px-6 py-3 bg-[#D08C60] hover:bg-[#C17A50] text-white font-bold rounded-md transition-colors" disabled={addAppointmentLoading}>
-                            {addAppointmentLoading ? 'Adding...' : 'Add Appointment'}
-                          </button>
-                        </form>
                       )}
                     </div>
                   </div>
