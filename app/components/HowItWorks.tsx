@@ -2,24 +2,24 @@ import Button from './Button';
 
 const steps = [
   {
-    number: '01',
+    number: '1',
     title: 'Register Your Pet',
-    description: 'Create an account and register your pet with basic information like name, breed, age, and photo.'
+    description: 'Create an account and register your pet with basic information like name, breed, age.'
   },
   {
-    number: '02',
+    number: '2',
     title: 'Add Detailed Information',
     description: 'Enter health records, identification details, emergency contacts, and other important information.'
   },
   {
-    number: '03',
-    title: 'Receive Your NFC Tag',
-    description: 'We\'ll send you a durable, waterproof NFC tag that can be attached to your pet\'s collar.'
+    number: '3',
+    title: 'Scan & Access Information',
+    description: 'Authorized users can securely access your pet’s information by scanning the NFC tag. All data is protected and only accessible to permitted parties.'
   },
   {
-    number: '04',
-    title: 'Scan & Access Information',
-    description: 'Anyone with a smartphone can scan the NFC tag to access your pet\'s information in emergency situations.'
+    number: 'Optional',
+    title: 'Receive Your NFC Tag',
+    description: `We'll send you a durable, waterproof NFC tag that can be attached to your pet's collar.`
   }
 ];
 
