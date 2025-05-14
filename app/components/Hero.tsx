@@ -1,4 +1,5 @@
 import Button from './Button';
+import Image from 'next/image';
 
 export default function Hero() {
   return (
@@ -45,8 +46,15 @@ export default function Hero() {
               <div className="absolute top-4 left-4 w-full h-full bg-[#F9F3EE] rounded-tl-3xl rounded-br-3xl overflow-hidden shadow-xl">
                 <div className="w-full h-full flex items-center justify-center">
                   <div className="text-center p-8">
-                    <div className="w-32 h-32 mx-auto bg-[#C17A50] rounded-full flex items-center justify-center mb-6 shadow-lg">
-                      <span className="text-6xl">🐾</span>
+                    <div className="w-36 h-36 mx-auto bg-[#C17A50] rounded-full flex items-center justify-center mb-6 shadow-lg overflow-hidden p-3">
+                      <Image
+                        src="/cowicon.png"
+                        alt="App Icon"
+                        width={128}
+                        height={128}
+                        className="object-contain w-full h-full"
+                        priority
+                      />
                     </div>
                     <h3 className="text-2xl font-bold text-[#8B5A2B] mb-2">NFC Animal Passport</h3>
                     <p className="text-[#997B66]">Scan to access pet information</p>

@@ -86,8 +86,8 @@ export default function SignupPage() {
         firstName: formData.firstName,
         lastName: formData.lastName,
         email: formData.email,
-        phoneNumber: formData.phoneNumber,
-        address: formData.address,
+          phoneNumber: formData.phoneNumber,
+          address: formData.address,
         createdAt: new Date().toISOString(),
       };
 
@@ -169,35 +169,35 @@ export default function SignupPage() {
                 </div>
               </div>
 
-              <div className="mb-4">
-                <label htmlFor="phoneNumber" className="block text-sm font-medium text-[#797D62] mb-1">
-                  Phone Number
-                </label>
-                <input
-                  type="tel"
-                  id="phoneNumber"
-                  name="phoneNumber"
-                  value={formData.phoneNumber}
-                  onChange={handleChange}
-                  className="w-full px-4 py-2 border-2 border-[#D9AE94] rounded-md focus:ring-[#D9AE94] focus:border-[#D9AE94] transition-all"
-                  required
-                />
-              </div>
+                  <div className="mb-4">
+                    <label htmlFor="phoneNumber" className="block text-sm font-medium text-[#797D62] mb-1">
+                      Phone Number
+                    </label>
+                    <input
+                      type="tel"
+                      id="phoneNumber"
+                      name="phoneNumber"
+                      value={formData.phoneNumber}
+                      onChange={handleChange}
+                      className="w-full px-4 py-2 border-2 border-[#D9AE94] rounded-md focus:ring-[#D9AE94] focus:border-[#D9AE94] transition-all"
+                      required
+                    />
+                  </div>
 
-              <div className="mb-4">
-                <label htmlFor="address" className="block text-sm font-medium text-[#797D62] mb-1">
-                  Address
-                </label>
-                <input
-                  type="text"
-                  id="address"
-                  name="address"
-                  value={formData.address}
-                  onChange={handleChange}
-                  className="w-full px-4 py-2 border-2 border-[#D9AE94] rounded-md focus:ring-[#D9AE94] focus:border-[#D9AE94] transition-all"
-                  required
-                />
-              </div>
+                  <div className="mb-4">
+                    <label htmlFor="address" className="block text-sm font-medium text-[#797D62] mb-1">
+                      Address
+                    </label>
+                    <input
+                      type="text"
+                      id="address"
+                      name="address"
+                      value={formData.address}
+                      onChange={handleChange}
+                      className="w-full px-4 py-2 border-2 border-[#D9AE94] rounded-md focus:ring-[#D9AE94] focus:border-[#D9AE94] transition-all"
+                      required
+                    />
+                  </div>
               
               <div className="mb-4">
                 <label htmlFor="email" className="block text-sm font-medium text-[#797D62] mb-1">

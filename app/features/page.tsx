@@ -10,13 +10,13 @@ const features = [
     icon: '💉'
   },
   {
-    title: 'Instant Identification',
-    description: 'Quick access to your pet&apos;s identification details, helping reunite lost pets with their owners faster. Includes name, breed, age, and owner contact information.',
-    icon: '🔍'
+    title: 'Accessible Data Anywhere',
+    description: `Access your animal's digital passport securely from both web and mobile devices, anytime and anywhere.`,
+    icon: '🌐'
   },
   {
     title: 'Emergency Contacts',
-    description: 'Store important contact information for veterinarians, pet sitters, and emergency services. Ensure your pet receives proper care even when you&apos;re not available.',
+    description: 'Store important contact information for veterinarians, pet sitters, and emergency services. Ensure your pet receives proper care even when you\'re not available.',
     icon: '📞'
   },
   {

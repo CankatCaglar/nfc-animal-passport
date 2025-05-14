@@ -257,6 +257,12 @@ export default function Dashboard() {
             {/* Sidebar */}
             <div className="w-full md:w-1/4 self-start" style={{ position: 'sticky', top: '20px', marginLeft: '-59px', minWidth: '240px' }}>
               <div className="p-0 md:p-2">
+                {/* App Icon - Brand (üstte, büyük) */}
+                <div className="flex flex-col items-center mb-8 mt-2">
+                  <div className="w-34 h-34 bg-[#C17A50] rounded-full flex items-center justify-center shadow-md overflow-hidden">
+                    <img src="/cowicon.png" alt="App Icon" className="object-contain w-20 h-20" />
+                  </div>
+                </div>
                 <nav className="space-y-2">
                   <button
                     className={`block w-full text-left py-2 px-4 rounded-md font-medium transition-colors ${selectedSection === 'appointments' ? 'bg-[#D08C60] text-white' : 'text-[#797D62] hover:bg-[#D08C60] hover:text-white'}`}
@@ -281,7 +287,7 @@ export default function Dashboard() {
                     <div className="flex items-center mb-8 pr-1.5 relative">
                       <h2 className="text-2xl font-bold text-[#797D62] ml-0">Today's Appointments</h2>
                       <button
-                        className="ml-4 flex items-center justify-center w-10 h-10 rounded-full bg-[#D08C60] hover:bg-[#C17A50] text-white text-2xl focus:outline-none transition-colors"
+                        className="ml-4 flex items-center justify-center w-8 h-8 rounded-full bg-[#D08C60] hover:bg-[#C17A50] text-white text-lg focus:outline-none transition-colors"
                         onClick={() => {
                           setAppointmentType(null);
                           setShowAllAppointments(false);

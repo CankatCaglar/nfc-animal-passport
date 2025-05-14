@@ -73,7 +73,7 @@ export default function ContactPage() {
                       <option value="billing">Billing Question</option>
                       <option value="partnership">Partnership Opportunity</option>
                     </select>
-                  </div>
+        </div>
                   
                   <div className="mb-6">
                     <label htmlFor="message" className="block text-sm font-medium text-[#797D62] mb-1">
@@ -102,7 +102,7 @@ export default function ContactPage() {
                 <h2 className="text-2xl font-bold text-[#8B5A2B] mb-4">Visit Our Office</h2>
                 <p className="text-[#997B66] mb-6">
                   We&apos;re located in Bostanli, Izmir. Feel free to stop by during business hours!
-                </p>
+              </p>
                 <div className="w-full h-64 rounded-lg mb-6 overflow-hidden">
                   <iframe
                     title="Bostanli, Izmir Office Map"
@@ -117,23 +117,23 @@ export default function ContactPage() {
                 </div>
                 <div className="flex flex-col gap-2 text-left">
                   <div className="flex gap-12">
-                    <div>
-                      <h3 className="text-lg font-semibold text-[#8B5A2B] mb-2">Address</h3>
-                      <p className="text-[#997B66]">
-                        Bostanli<br />
-                        Izmir<br />
-                        Turkey
-                      </p>
-                    </div>
-                    <div>
-                      <h3 className="text-lg font-semibold text-[#8B5A2B] mb-2">Business Hours</h3>
-                      <p className="text-[#997B66]">
-                        Monday - Friday: 9am - 5pm<br />
-                        Saturday: 10am - 2pm<br />
-                        Sunday: Closed
-                      </p>
-                    </div>
+                <div>
+                    <h3 className="text-lg font-semibold text-[#8B5A2B] mb-2">Address</h3>
+                    <p className="text-[#997B66]">
+                      Bostanli<br />
+                      Izmir<br />
+                      Turkey
+                  </p>
+                </div>
+                <div>
+                    <h3 className="text-lg font-semibold text-[#8B5A2B] mb-2">Business Hours</h3>
+                    <p className="text-[#997B66]">
+                    Monday - Friday: 9am - 5pm<br />
+                    Saturday: 10am - 2pm<br />
+                    Sunday: Closed
+                  </p>
                   </div>
+                </div>
                   <div className="flex flex-wrap items-center mt-4 gap-8">
                     <div className="flex items-center min-w-[220px]">
                       <span className="inline-flex items-center justify-center w-8 h-8 rounded-full bg-[#F1DCA7] mr-3">
@@ -142,7 +142,7 @@ export default function ContactPage() {
                       <div className="flex flex-col justify-center">
                         <span className="font-semibold text-[#8B5A2B] leading-tight">Email</span>
                         <span className="text-[#997B66] leading-tight">cankatacarer@gmail.com</span>
-                      </div>
+                    </div>
                     </div>
                     <div className="flex items-center min-w-[220px]">
                       <span className="inline-flex items-center justify-center w-8 h-8 rounded-full bg-[#F1DCA7] mr-3">
@@ -151,7 +151,7 @@ export default function ContactPage() {
                       <div className="flex flex-col justify-center">
                         <span className="font-semibold text-[#8B5A2B] leading-tight">Phone</span>
                         <span className="text-[#997B66] leading-tight">+90 (553) 501 52 65</span>
-                      </div>
+                    </div>
                     </div>
                   </div>
                 </div>

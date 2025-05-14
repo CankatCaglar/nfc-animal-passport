@@ -8,9 +8,9 @@ const features = [
     icon: '💉'
   },
   {
-    title: 'Instant Identification',
-    description: 'Quick access to your pet\'s personal identification details, helping reunite lost pets with their owners quickly.',
-    icon: '🔍'
+    title: 'Accessible Data Anywhere',
+    description: `Access your animal's digital passport securely from both web and mobile devices, anytime and anywhere.`,
+    icon: '🌐'
   },
   {
     title: 'Emergency Contacts',
