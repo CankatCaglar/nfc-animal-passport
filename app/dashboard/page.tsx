@@ -413,7 +413,7 @@ export default function Dashboard() {
                         {appointmentsError}
                       </div>
                     ) : (
-                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                         {appointments
                           .filter(app =>
                             (activeType === 'All' || app.appointmentType === activeType) &&
@@ -423,16 +423,16 @@ export default function Dashboard() {
                           .slice(0, searchQuery ? undefined : 12)
                           .map((appointment, index) => (
                             <div key={appointment.id} className="bg-white border border-gray-200 rounded-lg p-6 shadow-sm hover:shadow-md transition-shadow hover:-translate-y-1 duration-300">
-                              <div className="flex justify-between items-start mb-4">
-                                <div className="font-bold text-[#797D62] text-lg">{appointment.time}</div>
-                                <div className="px-3 py-1 rounded-full text-white text-sm font-medium bg-[#D08C60]">
-                                  {appointment.appointmentType}
-                                </div>
-                              </div>
-                              <div className="mb-4">
-                                <h3 className="text-xl font-semibold text-[#797D62]">{appointment.petName}</h3>
-                                <p className="text-[#997B66]">Owner: {appointment.ownerName}</p>
-                              </div>
+                          <div className="flex justify-between items-start mb-4">
+                            <div className="font-bold text-[#797D62] text-lg">{appointment.time}</div>
+                            <div className="px-3 py-1 rounded-full text-white text-sm font-medium bg-[#D08C60]">
+                              {appointment.appointmentType}
+                            </div>
+                          </div>
+                          <div className="mb-4">
+                            <h3 className="text-xl font-semibold text-[#797D62]">{appointment.petName}</h3>
+                            <p className="text-[#997B66]">Owner: {appointment.ownerName}</p>
+                          </div>
                             </div>
                           ))}
                         {appointments.filter(app =>
@@ -443,7 +443,7 @@ export default function Dashboard() {
                             <p className="text-[#797D62] text-lg">No appointments found.</p>
                           </div>
                         )}
-                      </div>
+                        </div>
                     )}
                   </div>
                 )}

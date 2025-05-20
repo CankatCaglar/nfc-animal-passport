@@ -24,17 +24,6 @@ export default function Hero() {
               >
                 Dashboard
               </Button>
-              <Button 
-                variant="outline" 
-                size="lg" 
-                href="/learn-more" 
-                outlineBorderColor="border-white" 
-                outlineTextColor="text-white" 
-                outlineHoverBgColor="hover:bg-[#F1DCA7]" 
-                outlineHoverTextColor="hover:text-[#8B5A2B]"
-              >
-                Learn More
-              </Button>
             </div>
           </div>
           
