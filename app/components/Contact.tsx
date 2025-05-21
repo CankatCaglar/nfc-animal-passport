@@ -47,9 +47,9 @@ export default function Contact() {
   return (
     <section className="py-16 bg-[#9B9B7A] relative">
       <div className="container mx-auto px-4">
-        <div className="max-w-5xl mx-auto">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
-            <div>
+        <div className="w-full">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-12 w-full">
+            <div className="justify-self-start w-full md:max-w-lg">
               <h2 className="text-3xl md:text-4xl font-bold text-white mb-6">
                 Get In Touch
               </h2>
@@ -97,7 +97,7 @@ export default function Contact() {
               </div>
             </div>
             
-            <div>
+            <div className="justify-self-end w-full md:max-w-xl">
               <div className="bg-white rounded-lg shadow-xl p-8 transform transition-all hover:shadow-lg border-2 border-[#F1DCA7]">
                 {submitSuccess ? (
                   <div className="text-center py-8">

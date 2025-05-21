@@ -26,9 +26,13 @@ export default function Card({
   titleColor = 'text-[#797D62]',
   textColor = 'text-[#997B66]',
   borderColor = 'border-[#D9AE94]',
-}: CardProps) {
+  hoverEffect = false,
+}: CardProps & { hoverEffect?: boolean }) {
   return (
-    <div className={`${bgColor} rounded-lg shadow-md overflow-hidden border ${borderColor} ${className}`}>
+    <div
+      className={`flex flex-col items-center justify-center min-h-[300px] h-full ${bgColor} rounded-2xl shadow-xl border ${borderColor} ${className} transition-all duration-300 ${hoverEffect ? 'hover:-translate-y-2 hover:shadow-2xl' : ''}`}
+      style={{ maxWidth: 370, minWidth: 210 }}
+    >
       {image && (
         <div className="relative h-48 w-full">
           <Image
@@ -39,23 +43,15 @@ export default function Card({
           />
         </div>
       )}
-      
-      <div className="p-6">
-        <div className="flex items-start">
-          {icon && (
-            <div className="mr-4 flex-shrink-0">
-              <div className={`w-12 h-12 rounded-full ${iconBgColor} flex items-center justify-center shadow-md`}>
-                <span className="text-white text-xl">{icon}</span>
-              </div>
-            </div>
-          )}
-          
-          <div>
-            <h3 className={`text-xl font-semibold ${titleColor} mb-2`}>{title}</h3>
-            <p className={`${textColor} mb-4`}>{description}</p>
-            {children}
+      <div className="flex flex-col items-center justify-center flex-1 w-full px-6 py-8">
+        {icon && (
+          <div className={`w-16 h-16 rounded-full ${iconBgColor} flex items-center justify-center shadow-lg mb-5`} style={{boxShadow:'0 4px 24px 0 rgba(208,140,96,0.15)'}}>
+            <span className="text-white text-3xl flex items-center justify-center">{icon}</span>
           </div>
-        </div>
+        )}
+        <h3 className={`text-2xl font-bold ${titleColor} mb-3 text-center`}>{title}</h3>
+        <p className={`${textColor} text-base text-center mb-3 leading-relaxed`}>{description}</p>
+        {children}
       </div>
     </div>
   );

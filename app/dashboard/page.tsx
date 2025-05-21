@@ -304,14 +304,20 @@ export default function Dashboard() {
                     {/* Add Appointment Options - Modern Popup */}
                     {showAddOptions && !appointmentType && (
                       <div className="w-full flex mb-6">
-                        <div className="flex flex-row gap-4 bg-white shadow-lg rounded-xl px-6 py-4 z-30 border border-[#D08C60]">
-                          {['Vaccination', 'Check-up', 'Surgery'].map(type => (
+                        <div className="flex flex-row gap-6 items-center justify-start">
+                          {[
+                            { type: 'Vaccination', icon: <FaSyringe className='w-5 h-5 mr-2 text-[#D08C60]' /> },
+                            { type: 'Check-up', icon: <FiEye className='w-5 h-5 mr-2 text-[#D08C60]' /> },
+                            { type: 'Surgery', icon: <FaFileMedical className='w-5 h-5 mr-2 text-[#D08C60]' /> },
+                          ].map(({ type, icon }) => (
                             <button
                               key={type}
-                              className={`px-6 py-3 rounded-lg font-semibold text-lg transition-all duration-200 cursor-pointer border-2 ${appointmentType === type ? 'bg-[#D08C60] text-white border-[#D08C60]' : 'bg-white text-[#797D62] border-[#D08C60] hover:bg-[#D08C60] hover:text-white'}`}
+                              className={`flex items-center px-7 py-4 rounded-xl font-semibold text-lg transition-all duration-200 cursor-pointer border-2 shadow-md bg-white hover:bg-[#F1DCA7] hover:border-[#D08C60] hover:scale-105 ${appointmentType === type ? 'bg-[#D08C60] text-white border-[#D08C60]' : 'text-[#797D62] border-[#D08C60]'}`}
                               onClick={() => setAppointmentType(type as typeof appointmentType)}
                               type="button"
+                              style={{ minWidth: 170 }}
                             >
+                              {icon}
                               {type}
                             </button>
                           ))}
@@ -551,7 +557,7 @@ export default function Dashboard() {
                               className={`flex items-center justify-center px-4 py-2 rounded-md transition-colors font-medium ${expandedAnimalId === animal.id ? 'bg-[#C17A50] text-white' : 'bg-[#D08C60] text-white hover:bg-[#C17A50]'}`}
                             >
                               <FiFileText className="mr-2" />
-                              {expandedAnimalId === animal.id ? 'Hide Records' : 'View Records'}
+                              {expandedAnimalId === animal.id ? 'Hide Animal Details' : 'View Animal Details'}
                             </button>
                           </div>
                           {expandedAnimalId === animal.id && (

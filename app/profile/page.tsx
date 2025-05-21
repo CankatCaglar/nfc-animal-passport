@@ -145,240 +145,246 @@ export default function ProfilePage() {
 
   if (loading) {
     return (
-      <main className="min-h-screen bg-[#9B9B7A]">
+      <div className="min-h-screen flex flex-col min-h-[100vh] bg-[#9B9B7A]">
         <Header />
-        <div className="flex items-center justify-center pt-20">
+        <div className="flex-1 flex items-center justify-center pt-20">
           <div className="text-white text-xl">Loading...</div>
         </div>
-      </main>
+        <Footer />
+      </div>
     );
   }
 
   if (!user) {
     return (
-      <main className="min-h-screen bg-[#9B9B7A]">
+      <div className="min-h-screen flex flex-col min-h-[100vh] bg-[#9B9B7A]">
         <Header />
-        <div className="flex items-center justify-center pt-20">
+        <div className="flex-1 flex items-center justify-center pt-20">
           <div className="text-white text-xl">Please log in to view your profile</div>
         </div>
-      </main>
+        <Footer />
+      </div>
     );
   }
 
   return (
-    <main className="min-h-screen">
+    <div className="min-h-screen flex flex-col min-h-[100vh] bg-[#9B9B7A]">
       <Header />
-      
-      <section className="pt-16 pb-8 md:pt-20 md:pb-10 bg-[#9B9B7A]">
-        <div className="container mx-auto px-4">
-          <div className="max-w-4xl mx-auto text-center">
-            {/* Başlık ve açıklama kaldırıldı */}
+      <div className="flex-1 flex flex-col">
+        <section className="pt-24 pb-16 md:pt-3 md:pb-14 bg-[#9B9B7A]">
+          <div className="container mx-auto px-4">
+            <div className="max-w-4xl mx-auto text-center">
+              {/* Başlık ve açıklama kaldırıldı */}
+            </div>
           </div>
-        </div>
-      </section>
-      
-      <section className="pt-4 pb-16 bg-[#9B9B7A]">
-        <div className="container mx-auto px-4">
-          <div className="max-w-6xl mx-auto">
-            {error && (
-              <div className="mb-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded">
-                {error}
-              </div>
-            )}
-            
-            <div className="flex flex-col md:flex-row gap-8 md:align-start">
-              {/* Sidebar */}
-              <div className="w-full md:w-1/3 self-start" style={{ position: 'sticky', top: '20px' }}>
-                <div className="p-6">
-                  <div className="text-center mb-6">
-                    <div className="w-32 h-32 bg-[#F2D399] rounded-full mx-auto mb-4 flex items-center justify-center overflow-hidden">
-                      <span className="text-white text-5xl">{userData.userType === 'veterinarian' ? '👨‍⚕️' : '👤'}</span>
-                    </div>
-                    <h3 className="text-xl font-bold text-white">{`${userData.firstName?.trim() || ''} ${userData.lastName?.trim() || ''}`.trim()}</h3>
-                    <div className="mt-2 mb-2">
-                      <span className="inline-block px-4 py-1 rounded-full text-base font-semibold" style={{background:'#997B66', color:'white'}}>
-                        {userData.userType === 'veterinarian' ? 'Veterinarian' : 'Pet Owner'}
-                      </span>
-                    </div>
-                    <p className="text-white text-sm mb-2">Member since {new Date().getFullYear()}</p>
-                  </div>
-                  
-                  <nav className="space-y-2">
-                    <a href="#" className="block py-2 px-4 bg-[#D08C60] text-white rounded-md font-medium">Profile Information</a>
-                    <a href="#" className="block py-2 px-4 text-white hover:bg-[#D08C60] hover:text-white rounded-md transition-colors">Password & Security</a>
-                    {userData.userType === 'vet' && (
-                      <>
-                        <a href="#" className="block py-2 px-4 text-white hover:bg-[#D08C60] hover:text-white rounded-md transition-colors">Appointments</a>
-                        <a href="#" className="block py-2 px-4 text-white hover:bg-[#D08C60] hover:text-white rounded-md transition-colors">Working Hours</a>
-                      </>
-                    )}
-                  </nav>
+        </section>
+        <section>
+          <div className="container mx-auto px-4">
+            <div className="max-w-7xl mx-auto">
+              {error && (
+                <div className="mb-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded">
+                  {error}
                 </div>
-              </div>
+              )}
               
-              {/* Main Content */}
-              <div className="w-full md:w-2/3">
-                <div className="p-6">
-                  <div>
-                    <div className="flex justify-between items-center mb-8">
-                      <h2 className="text-3xl font-bold text-white flex items-center gap-4">
-                        {userData.userType === 'veterinarian' ? 'Professional Information' : 'Personal Information'}
-                      </h2>
-                      <button
-                        onClick={toggleEditForm}
-                        className="bg-[#D08C60] hover:bg-[#C17A50] text-white py-2 px-6 rounded-md font-medium transition-colors"
-                      >
-                        {showEditForm ? "Cancel Edit" : "Edit Profile"}
-                      </button>
+              <div className="flex flex-col md:flex-row gap-20 md:align-start">
+                {/* Sidebar */}
+                <div className="w-full md:w-1/3 self-start" style={{ position: 'sticky', top: '20px' }}>
+                  <div className="p-6">
+                    <div className="text-center mb-6">
+                      <div className="w-32 h-32 bg-[#F2D399] rounded-full mx-auto mb-7 flex items-center justify-center overflow-hidden">
+                        <span className="text-white text-6xl">{userData.userType === 'veterinarian' ? '👨‍⚕️' : '👤'}</span>
+                      </div>
+                      <h3 className="text-xl font-bold text-white">{`${userData.firstName?.trim() || ''} ${userData.lastName?.trim() || ''}`.trim()}</h3>
+                      <div className="mt-2 mb-2">
+                        <span className="inline-block px-5 py-1 rounded-full text-base font-semibold" style={{background:'#997B66', color:'white'}}>
+                          {userData.userType === 'veterinarian' ? 'Veterinarian' : 'Pet Owner'}
+                        </span>
+                      </div>
+                      <p className="text-white text-sm mb-2">Member since {new Date().getFullYear()}</p>
                     </div>
                     
-                    <div className="space-y-8 pb-8">
+                    <nav className="space-y-2">
+                      <a href="#" className="block py-2 px-4 bg-[#D08C60] text-white rounded-md font-medium">Profile Information</a>
+                      <a href="#" className="block py-2 px-4 text-white hover:bg-[#D08C60] hover:text-white rounded-md transition-colors">Password & Security</a>
                       {userData.userType === 'vet' && (
                         <>
-                          <div className="flex flex-row items-center text-white text-base md:text-lg font-normal mb-4">
-                            <span className="whitespace-nowrap font-semibold">License Number:</span>
-                            <span className="ml-2 font-semibold">{userData.licenseNumber}</span>
-                          </div>
-                          <div>
-                            <h3 className="text-base md:text-lg font-semibold text-white mb-3">Specialties:</h3>
-                            <div className="flex flex-wrap gap-3 mb-4">
-                              {userData.specialties.map((specialty, index) => (
-                                <span key={index} className="bg-[#F2D399] text-[#6B705C] px-5 py-2 rounded-full text-base font-medium">{specialty}</span>
-                              ))}
-                            </div>
-                          </div>
+                          <a href="#" className="block py-2 px-4 text-white hover:bg-[#D08C60] hover:text-white rounded-md transition-colors">Appointments</a>
+                          <a href="#" className="block py-2 px-4 text-white hover:bg-[#D08C60] hover:text-white rounded-md transition-colors">Working Hours</a>
                         </>
                       )}
-                      <div className="flex flex-col gap-2">
-                        <div className="flex flex-row items-center text-white text-base md:text-lg font-normal">
-                          <span className="whitespace-nowrap font-semibold">Email:</span>
-                          <span className="ml-2 text-base md:text-lg">{userData.email}</span>
-                        </div>
-                        {userData.userType !== 'vet' && (
+                    </nav>
+                  </div>
+                </div>
+                
+                {/* Main Content */}
+                <div className="w-full md:w-2/3">
+                  <div className="p-6">
+                    <div>
+                      <div className="flex justify-between items-center mb-8">
+                        <h2 className="text-3xl font-bold text-white flex items-center gap-4">
+                          {userData.userType === 'veterinarian' ? 'Professional Information' : 'Personal Information'}
+                        </h2>
+                        <button
+                          onClick={toggleEditForm}
+                          className="bg-[#D08C60] hover:bg-[#C17A50] text-white py-2 px-6 rounded-md font-medium transition-colors"
+                        >
+                          {showEditForm ? "Cancel Edit" : "Edit Profile"}
+                        </button>
+                      </div>
+                      
+                      <div className="space-y-8 pb-8">
+                        {userData.userType === 'vet' && (
                           <>
-                            <div className="flex flex-row items-center text-white text-base md:text-lg font-normal">
-                              <span className="whitespace-nowrap font-semibold">Address:</span>
-                              <span className="ml-2 text-base md:text-lg">{userData.address}</span>
+                            <div className="flex flex-row items-center text-white text-base md:text-lg font-normal mb-4">
+                              <span className="whitespace-nowrap font-semibold">License Number:</span>
+                              <span className="ml-2 font-semibold">{userData.licenseNumber}</span>
                             </div>
-                            <div className="flex flex-row items-center text-white text-base md:text-lg font-normal">
-                              <span className="whitespace-nowrap font-semibold">Phone:</span>
-                              <span className="ml-2 text-base md:text-lg">{userData.phone}</span>
+                            <div>
+                              <h3 className="text-base md:text-lg font-semibold text-white mb-3">Specialties:</h3>
+                              <div className="flex flex-wrap gap-3 mb-4">
+                                {userData.specialties.map((specialty, index) => (
+                                  <span key={index} className="bg-[#F2D399] text-[#6B705C] px-5 py-2 rounded-full text-base font-medium">{specialty}</span>
+                                ))}
+                              </div>
                             </div>
                           </>
                         )}
+                        <div className="flex flex-col gap-3">
+                          <div className="flex flex-row items-center text-white text-base md:text-lg font-normal">
+                            <span className="whitespace-nowrap font-semibold">Email:</span>
+                            <span className="ml-2 text-base md:text-lg">{userData.email}</span>
+                          </div>
+                          {userData.userType !== 'vet' && (
+                            <>
+                              <div className="flex flex-row items-center text-white text-base md:text-lg font-normal">
+                                <span className="whitespace-nowrap font-semibold">Address:</span>
+                                <span className="ml-2 text-base md:text-lg">{userData.address}</span>
+                              </div>
+                              <div className="flex flex-row items-center text-white text-base md:text-lg font-normal">
+                                <span className="whitespace-nowrap font-semibold">Phone:</span>
+                                <span className="ml-2 text-base md:text-lg">{userData.phone}</span>
+                              </div>
+                            </>
+                          )}
+                        </div>
                       </div>
                     </div>
-                  </div>
-                  
-                  {showEditForm && (
-                    <div className="pt-6 mt-6 border-t border-gray-200">
-                      <h3 className="text-xl font-bold text-white mb-4">Edit Information</h3>
-                      
-                      <form onSubmit={handleFormSubmit}>
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-                          <div>
-                            <label htmlFor="firstName" className="block text-sm font-medium text-white mb-1">
-                              First Name
+                    
+                    {showEditForm && (
+                      <div className="pt-6 mt-6 border-t border-gray-200">
+                        <h3 className="text-xl font-bold text-white mb-4">Edit Information</h3>
+                        
+                        <form onSubmit={handleFormSubmit}>
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                            <div>
+                              <label htmlFor="firstName" className="block text-sm font-medium text-white mb-1">
+                                First Name
+                              </label>
+                              <input
+                                type="text"
+                                id="firstName"
+                                name="firstName"
+                                defaultValue={userData.firstName}
+                                className="w-full px-4 py-2 border-2 border-white text-black rounded-md focus:ring-white focus:border-white transition-all"
+                              />
+                            </div>
+                            
+                            <div>
+                              <label htmlFor="lastName" className="block text-sm font-medium text-white mb-1">
+                                Last Name
+                              </label>
+                              <input
+                                type="text"
+                                id="lastName"
+                                name="lastName"
+                                defaultValue={userData.lastName}
+                                className="w-full px-4 py-2 border-2 border-white text-black rounded-md focus:ring-white focus:border-white transition-all"
+                              />
+                            </div>
+                          </div>
+                          
+                          {userData.userType === 'vet' && (
+                            <div className="mb-4">
+                              <label htmlFor="license" className="block text-sm font-medium text-white mb-1">
+                                License Number
+                              </label>
+                              <input
+                                type="text"
+                                id="license"
+                                name="license"
+                                defaultValue={userData.licenseNumber}
+                                className="w-full px-4 py-2 border-2 border-white text-black rounded-md focus:ring-white focus:border-white transition-all"
+                              />
+                            </div>
+                          )}
+                          
+                          <div className="mb-4">
+                            <label htmlFor="email" className="block text-sm font-medium text-white mb-1">
+                              Email Address
                             </label>
                             <input
-                              type="text"
-                              id="firstName"
-                              name="firstName"
-                              defaultValue={userData.firstName}
+                              type="email"
+                              id="email"
+                              name="email"
+                              defaultValue={userData.email}
                               className="w-full px-4 py-2 border-2 border-white text-black rounded-md focus:ring-white focus:border-white transition-all"
                             />
                           </div>
                           
-                          <div>
-                            <label htmlFor="lastName" className="block text-sm font-medium text-white mb-1">
-                              Last Name
-                            </label>
-                            <input
-                              type="text"
-                              id="lastName"
-                              name="lastName"
-                              defaultValue={userData.lastName}
-                              className="w-full px-4 py-2 border-2 border-white text-black rounded-md focus:ring-white focus:border-white transition-all"
-                            />
+                          {userData.userType !== 'vet' && (
+                            <>
+                              <div className="mb-4">
+                                <label htmlFor="phone" className="block text-sm font-medium text-white mb-1">
+                                  Phone Number
+                                </label>
+                                <input
+                                  type="tel"
+                                  id="phone"
+                                  name="phone"
+                                  defaultValue={userData.phone}
+                                  className="w-full px-4 py-2 border-2 border-white text-black rounded-md focus:ring-white focus:border-white transition-all"
+                                />
+                              </div>
+                              <div className="mb-6">
+                                <label htmlFor="address" className="block text-sm font-medium text-white mb-1">
+                                  Address
+                                </label>
+                                <input
+                                  type="text"
+                                  id="address"
+                                  name="address"
+                                  defaultValue={userData.address}
+                                  className="w-full px-4 py-2 border-2 border-white text-black rounded-md focus:ring-white focus:border-white transition-all"
+                                />
+                              </div>
+                            </>
+                          )}
+                          
+                          <div className="flex justify-end">
+                            <button
+                              type="submit"
+                              className="bg-[#D08C60] hover:bg-[#C17A50] text-white py-2 px-6 rounded-md font-medium transition-colors"
+                            >
+                              Save Changes
+                            </button>
                           </div>
-                        </div>
-                        
-                        {userData.userType === 'vet' && (
-                          <div className="mb-4">
-                            <label htmlFor="license" className="block text-sm font-medium text-white mb-1">
-                              License Number
-                            </label>
-                            <input
-                              type="text"
-                              id="license"
-                              name="license"
-                              defaultValue={userData.licenseNumber}
-                              className="w-full px-4 py-2 border-2 border-white text-black rounded-md focus:ring-white focus:border-white transition-all"
-                            />
-                          </div>
-                        )}
-                        
-                        <div className="mb-4">
-                          <label htmlFor="email" className="block text-sm font-medium text-white mb-1">
-                            Email Address
-                          </label>
-                          <input
-                            type="email"
-                            id="email"
-                            name="email"
-                            defaultValue={userData.email}
-                            className="w-full px-4 py-2 border-2 border-white text-black rounded-md focus:ring-white focus:border-white transition-all"
-                          />
-                        </div>
-                        
-                        {userData.userType !== 'vet' && (
-                          <>
-                            <div className="mb-4">
-                              <label htmlFor="phone" className="block text-sm font-medium text-white mb-1">
-                                Phone Number
-                              </label>
-                              <input
-                                type="tel"
-                                id="phone"
-                                name="phone"
-                                defaultValue={userData.phone}
-                                className="w-full px-4 py-2 border-2 border-white text-black rounded-md focus:ring-white focus:border-white transition-all"
-                              />
-                            </div>
-                            <div className="mb-6">
-                              <label htmlFor="address" className="block text-sm font-medium text-white mb-1">
-                                Address
-                              </label>
-                              <input
-                                type="text"
-                                id="address"
-                                name="address"
-                                defaultValue={userData.address}
-                                className="w-full px-4 py-2 border-2 border-white text-black rounded-md focus:ring-white focus:border-white transition-all"
-                              />
-                            </div>
-                          </>
-                        )}
-                        
-                        <div className="flex justify-end">
-                          <button
-                            type="submit"
-                            className="bg-[#D08C60] hover:bg-[#C17A50] text-white py-2 px-6 rounded-md font-medium transition-colors"
-                          >
-                            Save Changes
-                          </button>
-                        </div>
-                      </form>
-                    </div>
-                  )}
+                        </form>
+                      </div>
+                    )}
+                  </div>
                 </div>
               </div>
             </div>
           </div>
-        </div>
-      </section>
-      
+        </section>
+      </div>
       <Footer />
+      <style jsx global>{`
+        footer {
+          margin-top: 63px !important;
+        }
+      `}</style>
 
       {/* Modal: E-posta değişikliğinde şifre sor */}
       {showPasswordModal && (
@@ -409,6 +415,6 @@ export default function ProfilePage() {
           </div>
         </div>
       )}
-    </main>
+    </div>
   );
 }
