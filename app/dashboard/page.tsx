@@ -92,7 +92,7 @@ export default function Dashboard() {
   const [recordsError, setRecordsError] = useState('');
   const [expandedAnimalId, setExpandedAnimalId] = useState<string | null>(null);
   const [appointmentType, setAppointmentType] = useState<'Vaccination' | 'Check-up' | 'Surgery' | null>(null);
-  const [appointmentForm, setAppointmentForm] = useState<{ time: string; petName: string; ownerName: string }>({ time: '', petName: '', ownerName: user?.displayName || '' });
+  const [appointmentForm, setAppointmentForm] = useState<{ time: string; livestockName: string; ownerName: string }>({ time: '', livestockName: '', ownerName: user?.displayName || '' });
   const [addAppointmentLoading, setAddAppointmentLoading] = useState(false);
   const [addAppointmentError, setAddAppointmentError] = useState('');
   const [appointments, setAppointments] = useState<any[]>([]);
@@ -225,7 +225,7 @@ export default function Dashboard() {
       const todayString = getTodayString();
       await addDoc(collection(db, 'appointments'), {
         time: appointmentForm.time,
-        petName: appointmentForm.petName,
+        livestockName: appointmentForm.livestockName,
         ownerName: appointmentForm.ownerName,
         ownerId: user.uid,
         appointmentType: appointmentType,
@@ -234,7 +234,7 @@ export default function Dashboard() {
         createdAt: Timestamp.now(),
       });
       setAppointmentType(null);
-      setAppointmentForm({ time: '', petName: '', ownerName: user.displayName || '' });
+      setAppointmentForm({ time: '', livestockName: '', ownerName: user.displayName || '' });
       setShowAddOptions(false);
     } catch (err: any) {
       setAddAppointmentError(err.message || 'Failed to add appointment');
@@ -355,8 +355,8 @@ export default function Dashboard() {
                             <input
                               type="text"
                               className="w-full px-4 py-2 border-2 border-[#D9AE94] rounded-md focus:ring-[#D9AE94] focus:border-[#D9AE94] mt-1"
-                              value={appointmentForm.petName}
-                              onChange={e => setAppointmentForm(f => ({ ...f, petName: e.target.value }))}
+                              value={appointmentForm.livestockName}
+                              onChange={e => setAppointmentForm(f => ({ ...f, livestockName: e.target.value }))}
                               required
                               placeholder="Enter your animal's name"
                             />
@@ -385,7 +385,7 @@ export default function Dashboard() {
                           <FiSearch className="text-[#D08C60] w-5 h-5 mr-2" />
                           <input
                             type="text"
-                            placeholder="Search by pet name"
+                            placeholder="Search by livestock name"
                             className="w-full bg-transparent border-none focus:outline-none text-[#797D62]"
                             value={searchQuery}
                             onChange={e => setSearchQuery(e.target.value)}
@@ -423,7 +423,7 @@ export default function Dashboard() {
                         {appointments
                           .filter(app =>
                             (activeType === 'All' || app.appointmentType === activeType) &&
-                            (!searchQuery || (app.petName && app.petName.toLowerCase().startsWith(searchQuery.toLowerCase())))
+                            (!searchQuery || ((app.livestockName || app.petName) && (app.livestockName || app.petName).toLowerCase().startsWith(searchQuery.toLowerCase())))
                           )
                           // Sadece son 12 randevu göster (arama yoksa)
                           .slice(0, searchQuery ? undefined : 12)
@@ -436,14 +436,14 @@ export default function Dashboard() {
                             </div>
                           </div>
                           <div className="mb-4">
-                            <h3 className="text-xl font-semibold text-[#797D62]">{appointment.petName}</h3>
+                            <h3 className="text-xl font-semibold text-[#797D62]">{appointment.livestockName || appointment.petName}</h3>
                             <p className="text-[#997B66]">Owner: {appointment.ownerName}</p>
                           </div>
                             </div>
                           ))}
                         {appointments.filter(app =>
                           (activeType === 'All' || app.appointmentType === activeType) &&
-                          (!searchQuery || (app.petName && app.petName.toLowerCase().includes(searchQuery.toLowerCase())))
+                          (!searchQuery || ((app.livestockName || app.petName) && (app.livestockName || app.petName).toLowerCase().includes(searchQuery.toLowerCase())))
                         ).length === 0 && (
                           <div className="text-center py-8 col-span-3">
                             <p className="text-[#797D62] text-lg">No appointments found.</p>

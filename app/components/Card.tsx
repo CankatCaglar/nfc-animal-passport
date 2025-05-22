@@ -44,14 +44,14 @@ export default function Card({
         </div>
       )}
       <div className="flex flex-col items-center justify-center flex-1 w-full px-6 py-8">
-        {icon && (
+          {icon && (
           <div className={`w-16 h-16 rounded-full ${iconBgColor} flex items-center justify-center shadow-lg mb-5`} style={{boxShadow:'0 4px 24px 0 rgba(208,140,96,0.15)'}}>
             <span className="text-white text-3xl flex items-center justify-center">{icon}</span>
-          </div>
-        )}
+            </div>
+          )}
         <h3 className={`text-2xl font-bold ${titleColor} mb-3 text-center`}>{title}</h3>
         <p className={`${textColor} text-base text-center mb-3 leading-relaxed`}>{description}</p>
-        {children}
+            {children}
       </div>
     </div>
   );

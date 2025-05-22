@@ -4,27 +4,27 @@ import { useState } from 'react';
 
 const testimonials = [
   {
-    quote: "The NFC Animal Passport has been a lifesaver for my adventurous cat. When she wandered off, someone found her and scanned the tag. They immediately had access to my contact information and were able to return her safely.",
+    quote: "The NFC Animal Passport has been a lifesaver for my adventurous livestock. When she wandered off, someone found her and scanned the tag. They immediately had access to my contact information and were able to return her safely.",
     name: "Sarah Johnson",
-    pet: "Owner of Luna, Domestic Shorthair",
+    livestock: "Owner of Luna, Domestic Shorthair",
     avatar: "🐱"
   },
   {
-    quote: "As a veterinarian, I recommend NFC Animal Passport to all my clients. It makes accessing medical history during emergencies so much easier, especially when pets are brought in by someone other than their primary owner.",
+    quote: "As a veterinarian, I recommend NFC Animal Passport to all my clients. It makes accessing medical history during emergencies so much easier, especially when livestock are brought in by someone other than their primary owner.",
     name: "Dr. Michael Chen",
-    pet: "Veterinarian",
+    livestock: "Veterinarian",
     avatar: "👨‍⚕️"
   },
   {
-    quote: "We travel frequently with our dog, and having all his vaccination records and travel documents accessible through the NFC tag has made crossing borders much smoother. No more carrying folders of paperwork!",
+    quote: "We travel frequently with our livestock, and having all his vaccination records and travel documents accessible through the NFC tag has made crossing borders much smoother. No more carrying folders of paperwork!",
     name: "James & Emily Wilson",
-    pet: "Owners of Max, Golden Retriever",
+    livestock: "Owners of Max, Golden Retriever",
     avatar: "🐕"
   },
   {
-    quote: "My elderly mother takes care of my rabbit when I&apos;m away. Having all the care instructions, dietary needs, and emergency contacts on the NFC tag gives me peace of mind that my pet will be well taken care of.",
+    quote: "My elderly mother takes care of my livestock when I&apos;m away. Having all the care instructions, dietary needs, and emergency contacts on the NFC tag gives me peace of mind that my livestock will be well taken care of.",
     name: "Olivia Martinez",
-    pet: "Owner of Thumper, Holland Lop",
+    livestock: "Owner of Thumper, Holland Lop",
     avatar: "🐰"
   }
 ];
@@ -48,7 +48,7 @@ export default function Testimonials() {
             What Our Users Say
           </h2>
           <p className="text-lg text-white opacity-80 max-w-2xl mx-auto">
-            Hear from pet owners who have experienced the benefits of NFC Animal Passport.
+            Hear from livestock owners who have experienced the benefits of NFC Animal Passport.
           </p>
         </div>
         
@@ -69,7 +69,7 @@ export default function Testimonials() {
                 </div>
                 <div>
                   <h4 className="font-semibold text-lg text-[#797D62]">{testimonials[activeIndex].name}</h4>
-                  <p className="text-[#997B66] opacity-80">{testimonials[activeIndex].pet}</p>
+                  <p className="text-[#997B66] opacity-80">{testimonials[activeIndex].livestock}</p>
                 </div>
               </div>
             </div>

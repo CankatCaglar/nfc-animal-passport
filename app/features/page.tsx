@@ -6,17 +6,17 @@ import Button from '../components/Button';
 const features = [
   {
     title: 'Digital Health Records',
-    description: 'Store vaccination records, medications, allergies, and medical history securely in one place. Easily share this information with veterinarians or pet sitters when needed.',
+    description: 'Store vaccination records, medications, allergies, and medical history securely in one place. Easily share this information with veterinarians or livestock sitters when needed.',
     icon: '💉'
   },
   {
     title: 'Accessible Data Anywhere',
-    description: `Access your animal's digital passport securely from both web and mobile devices, anytime and anywhere.`,
+    description: `Access your livestock's digital passport securely from both web and mobile devices, anytime and anywhere.`,
     icon: '🌐'
   },
   {
     title: 'Emergency Contacts',
-    description: 'Store important contact information for veterinarians, pet sitters, and emergency services. Ensure your pet receives proper care even when you\'re not available.',
+    description: 'Store important contact information for veterinarians, livestock sitters, and emergency services. Ensure your livestock receives proper care even when you\'re not available.',
     icon: '📞'
   }
 ];
@@ -33,7 +33,7 @@ export default function Features() {
               Features & Benefits
             </h1>
             <p className="text-base md:text-lg text-white opacity-90 max-w-2xl mx-auto">
-              Our NFC Animal Passport provides a comprehensive solution for managing your pet's information. Explore all the features that make it the perfect tool for responsible pet owners.
+              Our NFC Animal Passport provides a comprehensive solution for managing your livestock's information. Explore all the features that make it the perfect tool for responsible livestock owners.
             </p>
           </div>
           

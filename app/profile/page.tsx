@@ -198,7 +198,7 @@ export default function ProfilePage() {
                       <h3 className="text-xl font-bold text-white">{`${userData.firstName?.trim() || ''} ${userData.lastName?.trim() || ''}`.trim()}</h3>
                       <div className="mt-2 mb-2">
                         <span className="inline-block px-5 py-1 rounded-full text-base font-semibold" style={{background:'#997B66', color:'white'}}>
-                          {userData.userType === 'veterinarian' ? 'Veterinarian' : 'Pet Owner'}
+                          {userData.userType === 'veterinarian' ? 'Veterinarian' : 'Livestock Owner'}
                         </span>
                       </div>
                       <p className="text-white text-sm mb-2">Member since {new Date().getFullYear()}</p>

@@ -8,7 +8,7 @@ export default function Footer() {
           <div>
             <h3 className="text-xl font-bold mb-4 text-[#F1DCA7] text-center md:text-left">NFC Animal Passport</h3>
             <p className="text-sm text-white opacity-80 text-center md:text-left">
-              Secure digital passports for your pets using NFC technology.
+              Secure digital passports for your livestock using NFC technology.
               Track health records, identification, and more in one place.
             </p>
           </div>

@@ -82,7 +82,7 @@ export default function SignupPage() {
       // Store additional user data in Firestore
       const db = getFirestore();
       const userData = {
-        userType: 'pet-owner',
+        userType: 'livestock-owner',
         firstName: formData.firstName,
         lastName: formData.lastName,
         email: formData.email,

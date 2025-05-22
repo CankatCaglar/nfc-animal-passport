@@ -8,7 +8,7 @@ export default function Hero() {
         <div className="flex flex-col md:flex-row items-center">
           <div className="md:w-1/2 mb-10 md:mb-0">
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-4 leading-tight">
-              Digital Passports for <br />Your Pets
+              Digital Passports for <br />Your LiveStock
             </h1>
             <p className="text-lg md:text-xl text-white opacity-90 mb-8 max-w-lg">
               Secure, accessible, and convenient NFC-powered digital passports for your beloved animals. Keep all their important information in one place.
@@ -46,7 +46,7 @@ export default function Hero() {
                       />
                     </div>
                     <h3 className="text-2xl font-bold text-[#8B5A2B] mb-2">NFC Animal Passport</h3>
-                    <p className="text-[#997B66]">Scan to access pet information</p>
+                    <p className="text-[#997B66]">Scan to access livestock information</p>
                   </div>
                 </div>
               </div>

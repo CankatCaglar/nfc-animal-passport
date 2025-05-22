@@ -14,7 +14,7 @@ const features = [
   },
   {
     title: 'Emergency Contacts',
-    description: 'Store important contact information for veterinarians, pet sitters, and emergency services.',
+    description: 'Store important contact information for veterinarians, livestock sitters, and emergency services.',
     icon: '📞'
   }
 ];
@@ -28,7 +28,7 @@ export default function Features() {
             Key Features
           </h2>
           <p className="text-lg text-white opacity-80 max-w-2xl mx-auto">
-            Our NFC Animal Passport provides a comprehensive solution for managing your pet&apos;s information.
+            Our NFC Animal Passport provides a comprehensive solution for managing your livestock's information.
           </p>
         </div>
         

@@ -1,17 +1,17 @@
 # NFC Animal Passport
 
-A modern web application for managing pet information using NFC technology. This project provides a comprehensive solution for pet owners to store and access their pets' information digitally.
+A modern web application for managing livestock information using NFC technology. This project provides a comprehensive solution for livestock owners to store and access their livestock's information digitally.
 
 ## Features
 
 - **Digital Health Records**: Store vaccination records, medications, allergies, and medical history securely.
-- **Instant Identification**: Quick access to your pet's identification details.
-- **Emergency Contacts**: Store important contact information for veterinarians and pet services.
-- **Dietary Information**: Keep track of your pet's dietary needs and restrictions.
-- **Travel Documentation**: Store travel certificates and documentation for international travel.
-- **Behavior Notes**: Document your pet's behavior patterns and training progress.
-- **Medication Reminders**: Set up reminders for medications and veterinary appointments.
-- **Photo Gallery**: Store photos of your pet for identification and memories.
+- **Instant Identification**: Quick access to your livestock's identification details.
+- **Emergency Contacts**: Store important contact information for veterinarians and livestock services.
+- **Dietary Information**: Keep track of your livestock's dietary needs and restrictions.
+- **Health Records**: Maintain comprehensive health records and vaccination history.
+- **Behavior Notes**: Document your livestock's behavior patterns and training progress.
+- **Travel Documents**: Store and access travel-related documents and certificates.
+- **Photo Gallery**: Store photos of your livestock for identification and memories.
 
 ## Technologies Used
 

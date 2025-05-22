@@ -14,8 +14,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "NFC Animal Passport | Modern Pet Identification",
-  description: "Secure digital passports for your pets using NFC technology. Track health records, identification, and more in one place.",
+  title: "NFC Animal Passport | Modern Livestock Identification",
+  description: "Secure digital passports for your livestock using NFC technology. Track health records, identification, and more in one place.",
 };
 
 export default function RootLayout({
